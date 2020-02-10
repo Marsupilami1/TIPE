@@ -32,27 +32,7 @@ def voisins(liste, tab, d) : # ~ Met à jours les voisins de la zone déjà expl
 	# ~ Ne renvoie rien car modifie directement
 
 
-def vitesse(distance) :
-	l,c = distance.shape
-	champ = np.zeros((l,c))
-	for y in range(l) :
-		for x in range(c) :
-			value = distance[x][y]-1
-			if x+1<c and y<l and x+1>=0 and y>=0 and distance[x+1][y] ==  value :
-				champ[x][y] = 0
-			elif x<c and y-1<l and x>=0 and y-1>=0 and distance[x][y-1] == value :
-				champ[x][y] = 1
-			elif x-1<c and y<l and x-1>=0 and y>=0 and distance[x-1][y] == value :
-				champ[x][y] = 2
-			elif x<c and y+1<l and x>=0 and y+1>=0 and distance[x][y+1] == value :
-				champ[x][y] = 3
-	return champ
-
-
-
-
-
-plateau = np.zeros((10,10)) # ~ Matrice 30,30
+plateau = np.zeros((30,30)) # ~ Matrice 30,30
 
 
 '''Pour des couloirs'''
@@ -71,29 +51,10 @@ plateau = np.zeros((10,10)) # ~ Matrice 30,30
 	# ~ plateau[i][20] = -10
 
 # ~ t0 = time.time()
-plateau = distances(plateau,5,5) # ~ Calcul les distances pour la sortie en 15,0
-# ~ print(time.time()-t0)
-# ~ plt.imshow(plateau) # ~ Plt fait l'imagne tout seul
-# ~ plt.show() # ~ On affiche l'image
-print(plateau)
-matrix = vitesse(plateau)
-print(matrix)
-print(plateau)
-
-l,k = matrix.shape
-for y in range(l) :
-	c=""
-	for x in range(k) :
-		v = matrix[x][y]
-		if v == 0 :
-			c+=">"
-		elif v == 1 :
-			c+="^"
-		elif v == 2 :
-			c+="<"
-		elif v == 3 :
-			c+="v"
-	print(c)
+plateau = distances(plateau,15,15) # ~ Calcul les distances pour la sortie en 15,0
+print(time.time()-t0)
+plt.imshow(plateau) # ~ Plt fait l'imagne tout seul
+plt.show() # ~ On affiche l'image
 
 # ~ 10,10 -> 0.06s
 # ~ 20,20 -> 0.97s
