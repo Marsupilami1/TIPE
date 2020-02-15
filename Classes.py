@@ -1,5 +1,6 @@
 from math import sqrt, floor
 
+
 class vecteur :
 	'''
 	Classe définissant un type vecteur, possibilité de :
@@ -11,9 +12,6 @@ class vecteur :
 	'''
 	def __init__(self, position) : # ~ Position est un tuple
 		self.x, self.y = position
-		
-	def norme(self) :
-		return sqrt(self.x*self.x + self.y*self.y)
 	
 	def entier(self) :
 		return vecteur((floor(self.x),floor(self.y)))
@@ -24,11 +22,21 @@ class vecteur :
 	def __iadd__(self, vect2) :
 		return vecteur((self.x+vect2.x, self.y+vect2.y))
 	
+	def __sub__(self, vect2) :
+		return vecteur((self.x-vect2.x, self.y-vect2.y))
+		
+	def __isub__(self, vect2) :
+		return vecteur((self.x-vect2.x, self.y-vect2.y))
+	
 	def __rmul__(self, scalaire) :
 		return vecteur((scalaire*self.x, scalaire*self.y))
 	
+	def __truediv__(self, scalaire) :
+		return vecteur((self.x/scalaire, self.y/scalaire))
+	
 	def __mul__(self, vect2) :
 		return self.x*vect2.x + self.y*vect2.y
+		
 	
 	def __eq__(self, vect2) :
 		return self.x == vect2.x and self.y == vect2.y
@@ -38,6 +46,12 @@ class vecteur :
 		
 	def __repr__(self) :
 		return ("Vecteur : ( {} , {} )".format(self.x, self.y))
+	
+	def norme(self) :
+		return sqrt(self.x*self.x + self.y*self.y)
+	
+	def normalise(self) :
+		return self/self.norme()
 	
 
 class individu :
@@ -53,3 +67,8 @@ class individu :
 	
 	def move(self) :
 		self.position += self.vitesse
+
+class pylone :
+	def __init__(self, position, rayon) :
+		self.position = vecteur(position)
+		self.rayon = rayon
