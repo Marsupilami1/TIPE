@@ -20,7 +20,7 @@ def voisins(liste, tab, d) : # ~ Met à jours les voisins de la zone déjà expl
 	run = liste[:] # ~ Liste des voisins itérée, on itère pas sur "liste" car on .append() dans la boucle
 	for i in run : # ~ Pour toutes les cellules de la zone explorée, il faudrait restreindre à la frontière
 		x,y = i # ~ Coordonnées de la cellule en question
-		'''Ici, on regarde les quatres cellules voisines, elles prennent la valeur du nombre d'itération'''
+		'''Ici, on regarde les huit cellules voisines, elles prennent la valeur du nombre d'itération'''
 		if ingrid(x+1,y,c,l) and tab[x+1][y] == 0 :
 			tab[x+1][y] = d
 			liste.append((x+1,y))
@@ -73,7 +73,7 @@ def vitesse(distance) :
 					champ[x][y] = 6
 				elif ingrid(x+1,y+1,c,l) and distance[x+1][y+1] < value and distance[x+1][y+1] > -2 :
 					champ[x][y] = 7
-			
+	
 	return champ
 
 
@@ -110,6 +110,7 @@ print("Tableaux prets")
 # ~ plt.imshow(Vitesses_map)
 # ~ plt.show()
 
+# ~ Python, distances seules
 # ~ 10,10 -> 0.06s
 # ~ 20,20 -> 0.97s
 # ~ 25,25 -> 2.37s
