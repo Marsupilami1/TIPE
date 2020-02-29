@@ -20,7 +20,6 @@ Ce programme permet d'obtenir le champs de vitesse, utilisé dans le fichier Dep
 PYTHON ne fait pas les calculs, ces derniers sont effectués par un programme C : Carte_des_distancesbis.c
 L'interaction entre PYTHON et le fichier .so (obtenue avec la commande qui suit, dans le bon répertoire)
 est gérée par la bibliothèque "ctypes" (importée en tant que "ct")
-
 gcc -shared -Wl,-soname,Carte_des_distances -o Carte_des_distances.so -fPIC Carte_des_distances.c
 """
 
@@ -60,4 +59,4 @@ Vitesses_map = Recup_matrice(40,0,20) # Définition de la variable "globale" (to
 # ~ 50,50 -> 0.23s
 # ~ 100,100 -> 3,72s
 # ~ 200,200 -> 60.8s
-# ~ *n    -> *n**4
+# ~ *n -> *n**4
