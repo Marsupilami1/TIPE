@@ -20,7 +20,21 @@ void Simulation::add_sortie(int x, int y)
 
 void Simulation::add_indiv(double x, double y) const
 {
-	new individu(x,y,0.2,4);
+	double r = 0.5;
+	bool ok = true;
+	
+	int run = individu::nb_indiv();
+	for(int i = 0; i<run; i++)
+	{
+		individu* ind_lambda = individu::getElementListe(i);
+		if((ind_lambda->get_pos()-vect{x,y}).norme()<ind_lambda->get_R()+r)
+		{
+			ok = false;
+			break;
+		}
+	}
+	if(ok)
+		new individu(x,y,r,1,4);
 }
 
 void Simulation::add_n_indiv(unsigned int n) const

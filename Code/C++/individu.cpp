@@ -4,14 +4,13 @@
 std::vector<individu*> individu::m_Liste(0);
 extern std::vector<std::vector<int>> Champs_de_vitesses;
 
-individu::individu(double pos_x, double pos_y, double rayon, double rayon_CdV)
+individu::individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV)
 {
 	m_position = {pos_x, pos_y};
 	m_vitesse = {0.,0.};
 	m_rayon = rayon;
-	m_CdV = rayon_CdV;
-	
-	//~ static std::vector<individu> Liste(0);
+	m_rayon_repulsion = rayon_repulsion;
+	m_rayon_suivi = rayon_CdV;
 	
 	m_Liste.push_back(this);
 }
@@ -85,7 +84,7 @@ void individu::Display(sf::RenderWindow &window)
 {
 	sf::CircleShape cercle(10*m_rayon);
 	cercle.setFillColor(sf::Color(250,10,20));
-	cercle.setPosition(10*m_position.get_X(), 10*m_position.get_Y());
+	cercle.setPosition(10*(m_position.get_X()-m_rayon), 10*(m_position.get_Y()-m_rayon));
 	cercle.setOutlineThickness(1);
 	cercle.setOutlineColor(sf::Color::Black);
 	window.draw(cercle);
@@ -95,6 +94,11 @@ void individu::Display(sf::RenderWindow &window)
 int individu::nb_indiv()
 {
 	return m_Liste.size();
+}
+
+vect individu::get_pos()
+{
+	return m_position;
 }
 
 double individu::get_X()

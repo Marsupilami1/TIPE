@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL));
 	Simulation simul(40);
 	
-	//~ simul.add_n_indiv(50);
+	simul.add_n_indiv(400);
 	
 	simul.run();
 	
