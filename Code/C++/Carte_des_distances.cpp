@@ -71,8 +71,8 @@ void voisins(std::vector<std::vector<int>> &Carte, std::vector<vect> &vois, unsi
 
 std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<vect> sorties)
 {
-	std::vector<std::vector<int>> Carte(n, std::vector<int>(n,0));
-	std::vector<vect> vois(0);
+	std::vector<std::vector<int>> Carte(n, std::vector<int>(n,0)); //Carte vide de taille n*n
+	std::vector<vect> vois(0); //liste des voisins
 	for(unsigned int i=0; i<sorties.size(); i++)
 	{
 		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = -1;
@@ -81,12 +81,12 @@ std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<
 	
 	for(unsigned int k=0; k<=3*n; k++)
 	{
-		voisins(Carte, vois, k+1);
+		voisins(Carte, vois, k+1); //Met à jour les voisins
 	}
 	
 	for(unsigned int i=0; i<sorties.size(); i++)
 	{
-		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = 0;
+		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = 0; //Renvoi la carte avec les sorties mises à 0
 	}
 	
 	return Carte;
@@ -94,9 +94,9 @@ std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<
 
 int direction(int octet)
 {
-	int g = 0;
+	int g = 0; //Rotations
 	int zeros = 0;
-	int uns = 0;
+	int uns = 0; //Compte les 1
 	while ((octet>>7) == 1 && octet%2 == 1)
 	{
 		octet <<= 1;
@@ -137,9 +137,10 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 			value = distances[x][y];
 			octet = 0;
 			
+			//Construit l'octet
 			if(value != 0)
 			{
-				octet = (x+1<n && y<n && x+1>=0 && y>=0 && distances[x+1][y] < value && distances[x+1][y] > -2);
+				octet = (x+1<n && y<n && x+1>=0 && y>=0 && distances[x+1][y] < value && distances[x+1][y] > -2); //Dernier bit
 				octet =  octet << 1;
 				octet += (x+1<n && y-1<n && x+1>=0 && y-1>=0 && distances[x+1][y-1] < value && distances[x+1][y-1] > -2);
 				octet <<= 1;
@@ -153,7 +154,7 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 				octet <<= 1;
 				octet += (x<n && y+1<n && x>=0 && y+1>=0 && distances[x][y+1] < value && distances[x][y+1] > -2);
 				octet <<= 1;
-				octet += (x+1<n && y+1<n && x+1>=0 && y+1>=0 && distances[x+1][y+1] < value && distances[x+1][y+1] > -2);
+				octet += (x+1<n && y+1<n && x+1>=0 && y+1>=0 && distances[x+1][y+1] < value && distances[x+1][y+1] > -2); //Premier bit -celui tt à dte-
 				
 				Champs[x][y] = direction(octet);
 			} else {
@@ -167,7 +168,7 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 
 
 
-void calculs_champs(const unsigned int n, const std::vector<vect> sorties)
+void calculs_champs(const unsigned int n, const std::vector<vect> sorties) //Calcul le chmps de vit
 {
 	Champs_de_vitesses = vitesses(distances(n, sorties));
 }
