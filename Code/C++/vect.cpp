@@ -28,6 +28,14 @@ void vect::afficher() const
 	std::cout << "Vecteur : ( " << m_x << " , " << m_y << " )\n";
 }
 
+void vect::rotate(double theta)
+{
+	double mem = m_x;
+	double theta2 = theta*theta;
+	m_x = m_x*(1-theta2/2) - m_y*theta;
+	m_y = m_y*(1-theta2/2) + mem*theta;
+}
+
 double vect::norme()
 {
 	return sqrt(m_x*m_x + m_y*m_y);
@@ -35,7 +43,7 @@ double vect::norme()
 
 vect vect::entier()
 {
-	vect res(floor(m_x), floor(m_y));
+	vect res = {floor(m_x), floor(m_y)};
 	return res;
 }
 
@@ -134,8 +142,8 @@ vect operator/(vect const& u, double const& k)
 
 vect vect::normalise() const
 {
-	vect id(m_x, m_y);
-	return id / id.norme();
+	vect id(*this);
+	return (id/(id.norme()));
 }
 
 

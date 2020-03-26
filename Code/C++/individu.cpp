@@ -1,5 +1,15 @@
 #include "individu.h"
 #include <iostream>
+#include <chrono>
+#include <random>
+
+const double PI = 3.14159265358979323846264338427950;
+extern unsigned int TAILLE_GRILLE;
+
+// Génération d'une loi de répartition normale
+std::default_random_engine generator (std::chrono::system_clock::now().time_since_epoch().count());
+std::normal_distribution<double> distribution(0.,PI/12.);
+
 
 std::vector<individu*> individu::m_Liste(0);
 extern std::vector<std::vector<int>> Champs_de_vitesses;
@@ -15,6 +25,11 @@ individu::individu(double pos_x, double pos_y, double rayon, double rayon_repuls
 	m_Liste.push_back(this);
 }
 
+individu::~individu()
+{
+	m_Liste.erase(m_Liste.begin()+recherche(m_Liste, this));
+}
+
 
 void individu::afficher()
 {
@@ -28,53 +43,80 @@ individu* individu::getElementListe(int k)
 
 void individu::calcul_vitesse()
 {
+	double alpha = 0.5;
+	// Vitesse du champs de vitesses
 	int x = m_position.get_X();
 	int y = m_position.get_Y();
 	int v_chemin = Champs_de_vitesses[x][y];
-	vect vit;
-	switch(v_chemin)
+	vect vit = {0,0};
+	if(v_chemin > -1)
+		vit = std::vector<vect> {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}}[v_chemin];
+	m_vitesse = alpha*vit;
+	m_vitesse.rotate(distribution(generator));
+	
+	
+	// Si Approche d'un autre
+	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] != -1)
 	{
-		case 0 :
-			vit = {1, 0};
-			break;
-		case 1 :
-			vit = {1, -1};
-			break;
-		case 2 :
-			vit = {0, -1};
-			break;
-		case 3:
-			vit = {-1, -1};
-			break;
-		case 4 :
-			vit = {-1, 0};
-			break;
-		case 5:
-			vit = {-1, 1};
-			break;
-		case 6:
-			vit = {0, 1};
-			break;
-		case 7 :
-			vit = {1, 1};
-			break;
-		case -1 :
-			vit = {0,0};
-			break;
+		int run=nb_indiv();
+		for(int i=0; i<run; i++)
+		{
+			if(repulsion(*(individu::getElementListe(i))))
+			{
+				m_vitesse = (individu::getElementListe(i)->get_vit())*0.3;
+				break;
+			}
+		}
 	}
-	m_vitesse = 0.5*vit;
+	
+	// Si sortie de zone
+	m_position += m_vitesse;
+	if((m_position).get_Y()+m_rayon>=TAILLE_GRILLE)
+	{
+		m_position = {m_position.get_X()+(TAILLE_GRILLE-m_position.get_Y()-m_rayon)*m_vitesse.get_X()/(m_vitesse.get_Y()),TAILLE_GRILLE-m_rayon};
+		m_vitesse = {m_vitesse.get_X(),-m_vitesse.get_Y()};
+	} else if(m_position.get_Y()<m_rayon)
+	{
+		m_position = {m_position.get_X()+(m_rayon-m_position.get_Y())*m_vitesse.get_X()/(m_vitesse.get_Y()),m_rayon};
+		m_vitesse = {m_vitesse.get_X(),-m_vitesse.get_Y()};
+	} else if((m_position).get_X()+m_rayon>=TAILLE_GRILLE)
+	{
+		m_position = {TAILLE_GRILLE-m_rayon,m_position.get_Y()+(TAILLE_GRILLE-m_position.get_X()-m_rayon)*m_vitesse.get_Y()/(m_vitesse.get_X())};
+		m_vitesse = {-m_vitesse.get_X(),m_vitesse.get_Y()};
+	} else if(m_position.get_X()<m_rayon)
+	{
+		m_position = {m_rayon,m_position.get_Y()+(m_rayon-m_position.get_X())*m_vitesse.get_Y()/(m_vitesse.get_X())};
+		m_vitesse = {-m_vitesse.get_X(),m_vitesse.get_Y()};
+	} else
+	{
+		m_position -= m_vitesse;
+	}
+	
+	// Si collision (!) -> possibilité de rester bloquer, même sans collision.
+	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] != -1)
+	{
+		int run=nb_indiv();
+		for(int i=0; i<run; i++)
+		{
+			if(touch(*(individu::getElementListe(i))))
+			{
+				m_vitesse = {0,0};
+				break;
+			}
+		}
+	}
 }
 
 bool individu::move()
 {
 	m_position += m_vitesse;
 	
-	int x = m_position.get_X();
-	int y = m_position.get_Y();
-	if(Champs_de_vitesses[x][y] == -1)
+	int x = m_position.entier().get_X();
+	int y = m_position.entier().get_Y();
+	std::cout << "this : " << this << std::endl << "x : " << x << std::endl << "y : " << y;
+	std:: cout << std::endl;
+	if(Champs_de_vitesses.at(x).at(y) == -1)
 	{
-		m_Liste.erase(m_Liste.begin()+recherche(m_Liste, this));
-		delete this;
 		return true;
 	}
 	return false;
@@ -96,9 +138,24 @@ int individu::nb_indiv()
 	return m_Liste.size();
 }
 
+bool individu::touch(individu const& indiv) const
+{
+	return (&indiv != this && (m_position-indiv.m_position).norme() < m_rayon+indiv.m_rayon);
+}
+
+bool individu::repulsion(individu const& indiv) const
+{
+	return (&indiv != this && m_vitesse*(indiv.m_position-m_position)>0 &&(m_position-indiv.m_position).norme() < m_rayon_repulsion);
+}
+
 vect individu::get_pos()
 {
 	return m_position;
+}
+
+vect individu::get_vit()
+{
+	return m_vitesse;
 }
 
 double individu::get_X()
@@ -123,3 +180,4 @@ int recherche(std::vector<individu*> const& L, individu* element)
 	}
 	return i;
 }
+

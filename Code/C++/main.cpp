@@ -2,12 +2,13 @@
 #include "simulation.h"
 #include <ctime>
 
+unsigned int TAILLE_GRILLE = 40;
+
 int main(int argc, char* argv[])
 {	
 	srand(time(NULL));
-	Simulation simul(40);
-	
-	simul.add_n_indiv(400);
+	Simulation simul(TAILLE_GRILLE);
+	simul.add_n_indiv(100);
 	
 	simul.run();
 	

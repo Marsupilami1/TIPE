@@ -11,6 +11,7 @@ class individu
 {
 	public :
 	individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV);
+	~individu();
 	
 	void afficher();
 	static individu* getElementListe(int k);
@@ -18,7 +19,10 @@ class individu
 	bool move();
 	void Display(sf::RenderWindow &window);
 	static int nb_indiv();
+	bool touch(individu const& indiv) const;
+	bool repulsion(individu const& indiv) const;
 	vect get_pos();
+	vect get_vit();
 	double get_X();
 	double get_Y();
 	double get_R();

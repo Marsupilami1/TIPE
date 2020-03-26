@@ -20,7 +20,7 @@ void Simulation::add_sortie(int x, int y)
 
 void Simulation::add_indiv(double x, double y) const
 {
-	double r = 0.5;
+	double r = 0.2;
 	bool ok = true;
 	
 	int run = individu::nb_indiv();
@@ -34,7 +34,7 @@ void Simulation::add_indiv(double x, double y) const
 		}
 	}
 	if(ok)
-		new individu(x,y,r,1,4);
+		new individu(x,y,r,0.6,4);
 }
 
 void Simulation::add_n_indiv(unsigned int n) const
@@ -102,6 +102,7 @@ void Simulation::run()
 				escape = individu::getElementListe(i)->move();
 				if(escape)
 				{
+					delete individu::getElementListe(i);
 					i--;
 					run--;
 				} else {

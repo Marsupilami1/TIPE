@@ -17,6 +17,7 @@ class vect
 	double get_Y() const;
 	
 	void afficher() const;
+	void rotate(double theta);
 	double norme();
 	vect entier();
 	
