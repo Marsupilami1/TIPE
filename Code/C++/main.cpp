@@ -7,8 +7,8 @@ unsigned int TAILLE_GRILLE = 40;
 int main(int argc, char* argv[])
 {	
 	srand(time(NULL));
-	Simulation simul(TAILLE_GRILLE);
-	simul.add_n_indiv(100);
+	Simulation simul(TAILLE_GRILLE); // Classe simulation
+	simul.add_n_indiv(100); //Ajout d'individus
 	
 	simul.run();
 	

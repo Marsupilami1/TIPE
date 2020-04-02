@@ -1,4 +1,5 @@
 #include "vect.h"
+//:: <-> . en python 
 
 vect::vect(double x, double y) : m_x(x), m_y(y)
 {	
@@ -28,9 +29,10 @@ void vect::afficher() const
 	std::cout << "Vecteur : ( " << m_x << " , " << m_y << " )\n";
 }
 
+//Dl de theta en 0
 void vect::rotate(double theta)
 {
-	double mem = m_x;
+	double mem = m_x; //Variable "tampon"
 	double theta2 = theta*theta;
 	m_x = m_x*(1-theta2/2) - m_y*theta;
 	m_y = m_y*(1-theta2/2) + mem*theta;
@@ -140,6 +142,7 @@ vect operator/(vect const& u, double const& k)
 	return u*(1/k);
 }
 
+//! Vect non nul
 vect vect::normalise() const
 {
 	vect id(*this);
