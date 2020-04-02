@@ -43,29 +43,31 @@ individu* individu::getElementListe(int k)
 
 void individu::calcul_vitesse()
 {
-	double alpha = 0.5;
+	double alpha = 0.1;
+	int run = 0;
+	std::vector<vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 	// Vitesse du champs de vitesses
 	int x = m_position.get_X();
 	int y = m_position.get_Y();
 	int v_chemin = Champs_de_vitesses[x][y];
 	vect vit = {0,0};
 	if(v_chemin > -1)
-		vit = std::vector<vect> {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}}[v_chemin];
-	m_vitesse = alpha*vit;
+		vit = liste_vitesse[v_chemin];
+	m_vitesse = alpha*(vit.normalise());
 	m_vitesse.rotate(distribution(generator));
 	
 	
 	// Si Approche d'un autre
-	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] != -1)
+	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
+		return ;
+	
+	run=nb_indiv();
+	for(int i=0; i<run; i++)
 	{
-		int run=nb_indiv();
-		for(int i=0; i<run; i++)
+		if(repulsion(*(individu::getElementListe(i))))
 		{
-			if(repulsion(*(individu::getElementListe(i))))
-			{
-				m_vitesse = (individu::getElementListe(i)->get_vit())*0.3;
-				break;
-			}
+			m_vitesse /= 2;
+			break;
 		}
 	}
 	
@@ -74,35 +76,35 @@ void individu::calcul_vitesse()
 	if((m_position).get_Y()+m_rayon>=TAILLE_GRILLE)
 	{
 		m_position = {m_position.get_X()+(TAILLE_GRILLE-m_position.get_Y()-m_rayon)*m_vitesse.get_X()/(m_vitesse.get_Y()),TAILLE_GRILLE-m_rayon};
-		m_vitesse = {m_vitesse.get_X(),-m_vitesse.get_Y()};
+		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if(m_position.get_Y()<m_rayon)
 	{
 		m_position = {m_position.get_X()+(m_rayon-m_position.get_Y())*m_vitesse.get_X()/(m_vitesse.get_Y()),m_rayon};
-		m_vitesse = {m_vitesse.get_X(),-m_vitesse.get_Y()};
+		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if((m_position).get_X()+m_rayon>=TAILLE_GRILLE)
 	{
 		m_position = {TAILLE_GRILLE-m_rayon,m_position.get_Y()+(TAILLE_GRILLE-m_position.get_X()-m_rayon)*m_vitesse.get_Y()/(m_vitesse.get_X())};
-		m_vitesse = {-m_vitesse.get_X(),m_vitesse.get_Y()};
+		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if(m_position.get_X()<m_rayon)
 	{
 		m_position = {m_rayon,m_position.get_Y()+(m_rayon-m_position.get_X())*m_vitesse.get_Y()/(m_vitesse.get_X())};
-		m_vitesse = {-m_vitesse.get_X(),m_vitesse.get_Y()};
+		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else
 	{
 		m_position -= m_vitesse;
 	}
 	
+	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
+		return ;
+	
 	// Si collision (!) -> possibilité de rester bloquer, même sans collision.
-	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] != -1)
+	run=nb_indiv();
+	for(int i=0; i<run; i++)
 	{
-		int run=nb_indiv();
-		for(int i=0; i<run; i++)
+		if(touch(*(individu::getElementListe(i))))
 		{
-			if(touch(*(individu::getElementListe(i))))
-			{
-				m_vitesse = {0,0};
-				break;
-			}
+			m_vitesse = {0,0};
+			break;
 		}
 	}
 }
@@ -113,8 +115,8 @@ bool individu::move()
 	
 	int x = m_position.entier().get_X();
 	int y = m_position.entier().get_Y();
-	std::cout << "this : " << this << std::endl << "x : " << x << std::endl << "y : " << y;
-	std:: cout << std::endl;
+	//~ std::cout << "this : " << this << std::endl << "x : " << x << std::endl << "y : " << y;
+	//~ std:: cout << std::endl;
 	if(Champs_de_vitesses.at(x).at(y) == -1)
 	{
 		return true;
@@ -140,7 +142,7 @@ int individu::nb_indiv()
 
 bool individu::touch(individu const& indiv) const
 {
-	return (&indiv != this && (m_position-indiv.m_position).norme() < m_rayon+indiv.m_rayon);
+	return (&indiv != this && ((m_position+m_vitesse)-(indiv.m_position+indiv.m_vitesse)).norme() < m_rayon+indiv.m_rayon);
 }
 
 bool individu::repulsion(individu const& indiv) const
