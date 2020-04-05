@@ -3,14 +3,13 @@
 #include "Carte_des_distances.h"
 #include <cstdlib>
 
-Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille),
-"Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0)
+Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0)
 {
-	m_fenetre.setFramerateLimit(45); //Limite framerate
-	/*sf::ContextSettings settings;
-	settings.antialiasingLevel = 5;*/
+	m_fenetre.setFramerateLimit(45);
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 5;
 	
-	m_fenetre.clear(sf::Color::White); //! Fenêtre en blanc 
+	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
 }
 
@@ -21,29 +20,28 @@ void Simulation::add_sortie(int x, int y)
 
 void Simulation::add_indiv(double x, double y) const
 {
-	double r = 0.2; //Rayon de l'individus
-	bool ok = true; //Gestion du chevauchement
+	double r = 0.2;
+	bool ok = true;
 	
 	int run = individu::nb_indiv();
 	for(int i = 0; i<run; i++)
 	{
-		individu* ind_lambda = individu::getElementListe(i); //ind_lambda parcours les individus ds la liste
-		//(*ind_lambda).position <-> ind_lambda->position
-		if((ind_lambda->get_pos()-vect{x,y}).norme()<ind_lambda->get_R()+r) //Si la norme de la différence des vects est plus petits que la somme des rayons
+		individu* ind_lambda = individu::getElementListe(i); // (*ind_lambda).position <-> ind_lambda->position
+		if((ind_lambda->get_pos()-vect{x,y}).norme()<ind_lambda->get_R()+r) // Si plus proches que leur rayon...
 		{
 			ok = false;
 			break;
 		}
 	}
 	if(ok)
-		new individu(x,y,r,0.6,4); //0.6 et 4 : rayons de répulsions, d'attraction cf individu
+		new individu(x,y,r,3.*r,10*r);
 }
 
 void Simulation::add_n_indiv(unsigned int n) const
 {
 	for(unsigned int i=0; i<n; i++)
 	{
-		add_indiv(m_taille_grille*(rand()/(double)RAND_MAX), m_taille_grille*(rand()/(double)RAND_MAX));
+		add_indiv(2.+(m_taille_grille-4)*(rand()/(double)RAND_MAX), 2.+(m_taille_grille-4)*(rand()/(double)RAND_MAX));
 	}
 }
 
@@ -52,7 +50,6 @@ void Simulation::run()
 	bool escape = false;
 	bool active = false;
 	
-	//Dessine les sorties
 	for(unsigned int i=0; i<m_sorties.size(); i++)
 	{
 		sf::RectangleShape rectangle(sf::Vector2f(10, 10));
@@ -62,10 +59,9 @@ void Simulation::run()
 	}
 	m_fenetre.display();
 	
-	while (m_fenetre.isOpen() && ((individu::nb_indiv() != 0) || !(active))) //Gestion de la croix rouge et du lancement avec active
+	while (m_fenetre.isOpen() && ((individu::nb_indiv() != 0) || !(active)))
     {
 		sf::Event event; // Boucle d'événements
-		//Gestion des évenements
 		while (m_fenetre.pollEvent(event))
 		{
 			switch(event.type)
@@ -78,7 +74,7 @@ void Simulation::run()
 					if(event.key.code == sf::Keyboard::Return)
 					{
 						active = true;
-						calculs_champs(m_taille_grille, m_sorties); //cf Cartes des distances
+						calculs_champs(m_taille_grille, m_sorties);
 					}
 					break;
 					
@@ -102,11 +98,11 @@ void Simulation::run()
 			int run = individu::nb_indiv();
 			for(int i = 0; i<run; i++)
 			{
-				individu::getElementListe(i)->calcul_vitesse();//Calcul de vitesse
-				escape = individu::getElementListe(i)->move();//Déplacements
+				individu::getElementListe(i)->calcul_vitesse();
+				escape = individu::getElementListe(i)->move();
 				if(escape)
 				{
-					delete individu::getElementListe(i);//Ils s'échappent
+					delete individu::getElementListe(i);
 					i--;
 					run--;
 				} else {
@@ -124,7 +120,7 @@ void Simulation::run()
 			}
 			
 			m_fenetre.display();
-		} else { //Quand c'est pas lancé, on affiche sans rien bouger
+		} else {
 			m_fenetre.clear(sf::Color::White);
 			int run = individu::nb_indiv();
 			for(int i = 0; i<run; i++)

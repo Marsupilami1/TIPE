@@ -10,20 +10,21 @@
 class individu
 {
 	public :
-	individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV); //Def individu
-	~individu(); //Destructeur 
+	individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV);
+	~individu();
 	
 	void afficher();
-	static individu* getElementListe(int k); //On applique direct sur la classe
+	static individu* getElementListe(int k);
 	void calcul_vitesse();
-	bool move(); //Est-il sortit ?
+	bool move();
 	void Display(sf::RenderWindow &window);
 	static int nb_indiv();
-	bool touch(individu const& indiv) const; //2 mecs se touchent ?
-	bool repulsion(individu const& indiv) const; //Zone de répulsion vide ?
+	bool touch(individu const& indiv) const;
+	bool repulsion(individu const& indiv) const;
+	bool attraction(individu const& indiv) const;
 	vect get_pos();
 	vect get_vit();
-	double get_X(); // <-> get_pos().get_X()
+	double get_X();
 	double get_Y();
 	double get_R();
 	
@@ -36,7 +37,7 @@ class individu
 	double m_rayon_suivi;
 	static std::vector<individu*> m_Liste; // Liste des indivs...
 };
- /* Algo à refaire */
-int recherche(std::vector<individu*> const& L, individu* element); //Recherche un individus dans la liste
+
+int recherche(std::vector<individu*> const& L, individu* element);
 
 #endif

@@ -10,13 +10,12 @@ class vect
 {
 	public :
 	vect(double x = 0.0, double y = 0.0); // Constructeur
-	vect(int x, int y); //2fct diff
+	vect(int x, int y);
 	vect(vect const& v); // Constructeur
 	
 	double get_X() const;
 	double get_Y() const;
-
-	//Opérations sur le vect
+	
 	void afficher() const;
 	void rotate(double theta);
 	double norme();
@@ -25,12 +24,12 @@ class vect
 	bool egal(vect const& v) const;
 	vect oppose() const;
 	double scalaire(vect const& v) const;
-	vect& operator+=(vect const& v); //Definiton de lois de compositions
+	vect& operator+=(vect const& v);
 	vect& operator-=(vect const& v);
 	vect& operator*=(double const& k);
 	vect& operator/=(double const& k);
 	
-	vect normalise() const; //Normalisation d'un vect
+	vect normalise() const;
 	
 	private :
 	double m_x;
@@ -48,7 +47,7 @@ vect operator*(vect const& u, double const& k);
 double operator*(vect const& u, vect const& v);
 vect operator/(vect const&u, double const& k);
 
-std::ostream& operator<<(std::ostream &flux, vect const& u); //Affichage
+std::ostream& operator<<(std::ostream &flux, vect const& u);
 
 
 #endif

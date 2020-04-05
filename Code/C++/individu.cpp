@@ -12,7 +12,7 @@ std::normal_distribution<double> distribution(0.,PI/12.);
 
 
 std::vector<individu*> individu::m_Liste(0);
-extern std::vector<std::vector<int>> Champs_de_vitesses;
+extern std::vector<std::vector<int>> Champ_de_vitesses;
 
 individu::individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV)
 {
@@ -43,28 +43,42 @@ individu* individu::getElementListe(int k)
 
 void individu::calcul_vitesse()
 {
-	double alpha = 0.1;
+	double alpha = 0.1; // Vitesse du champ de vitesse
+	double beta = 0.4; // Influence des autres individus
+	//~ double gamma = 0.1; // Transfert de vitesse à un autre individu
 	int run = 0;
 	std::vector<vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 	// Vitesse du champs de vitesses
 	int x = m_position.get_X();
 	int y = m_position.get_Y();
-	int v_chemin = Champs_de_vitesses[x][y];
+	int v_chemin = Champ_de_vitesses[x][y];
 	vect vit = {0,0};
 	if(v_chemin > -1)
 		vit = liste_vitesse[v_chemin];
 	m_vitesse = alpha*(vit.normalise());
 	m_vitesse.rotate(distribution(generator));
 	
+	// Influence des autres
+	run=nb_indiv();
+	vect influence = {0,0};
+	for(int i=0; i<run; i++)
+	{
+		if(attraction(*(getElementListe(i))))
+		{
+			influence += (getElementListe(i)->get_vit())/((getElementListe(i)->get_pos()-m_position).norme());
+		}
+	}
+	m_vitesse += beta*influence;
+	m_vitesse = m_vitesse.normalise()*alpha;
 	
 	// Si Approche d'un autre
-	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
+	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
 		return ;
 	
 	run=nb_indiv();
 	for(int i=0; i<run; i++)
 	{
-		if(repulsion(*(individu::getElementListe(i))))
+		if(repulsion(*(getElementListe(i))))
 		{
 			m_vitesse /= 2;
 			break;
@@ -76,32 +90,32 @@ void individu::calcul_vitesse()
 	if((m_position).get_Y()+m_rayon>=TAILLE_GRILLE)
 	{
 		m_position = {m_position.get_X()+(TAILLE_GRILLE-m_position.get_Y()-m_rayon)*m_vitesse.get_X()/(m_vitesse.get_Y()),TAILLE_GRILLE-m_rayon};
-		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
+		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if(m_position.get_Y()<m_rayon)
 	{
 		m_position = {m_position.get_X()+(m_rayon-m_position.get_Y())*m_vitesse.get_X()/(m_vitesse.get_Y()),m_rayon};
-		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
+		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if((m_position).get_X()+m_rayon>=TAILLE_GRILLE)
 	{
 		m_position = {TAILLE_GRILLE-m_rayon,m_position.get_Y()+(TAILLE_GRILLE-m_position.get_X()-m_rayon)*m_vitesse.get_Y()/(m_vitesse.get_X())};
-		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
+		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else if(m_position.get_X()<m_rayon)
 	{
 		m_position = {m_rayon,m_position.get_Y()+(m_rayon-m_position.get_X())*m_vitesse.get_Y()/(m_vitesse.get_X())};
-		m_vitesse = alpha*(liste_vitesse[Champs_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
+		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().get_X()][m_position.entier().get_Y()]].normalise());
 	} else
 	{
 		m_position -= m_vitesse;
 	}
 	
-	if(Champs_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
+	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
 		return ;
 	
-	// Si collision (!) -> possibilité de rester bloquer, même sans collision.
+	// Si collision (!) -> possibilité de rester bloqué, même sans collision.
 	run=nb_indiv();
 	for(int i=0; i<run; i++)
 	{
-		if(touch(*(individu::getElementListe(i))))
+		if(touch(*(getElementListe(i))))
 		{
 			m_vitesse = {0,0};
 			break;
@@ -117,7 +131,7 @@ bool individu::move()
 	int y = m_position.entier().get_Y();
 	//~ std::cout << "this : " << this << std::endl << "x : " << x << std::endl << "y : " << y;
 	//~ std:: cout << std::endl;
-	if(Champs_de_vitesses.at(x).at(y) == -1)
+	if(Champ_de_vitesses.at(x).at(y) == -1)
 	{
 		return true;
 	}
@@ -148,6 +162,11 @@ bool individu::touch(individu const& indiv) const
 bool individu::repulsion(individu const& indiv) const
 {
 	return (&indiv != this && m_vitesse*(indiv.m_position-m_position)>0 &&(m_position-indiv.m_position).norme() < m_rayon_repulsion);
+}
+
+bool individu::attraction(individu const& indiv) const
+{
+	return (&indiv != this && m_vitesse*(indiv.m_position-m_position)>0 &&(m_position-indiv.m_position).norme() < m_rayon_suivi);
 }
 
 vect individu::get_pos()
