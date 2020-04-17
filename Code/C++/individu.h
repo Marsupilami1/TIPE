@@ -7,6 +7,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+const unsigned int TAILLE_GRILLE = 40;
+
 class individu
 {
 	public :
@@ -14,19 +16,21 @@ class individu
 	~individu();
 	
 	void afficher();
-	static individu* getElementListe(int k);
+	static std::vector<individu*>* getVecteursCase(int x, int y);
 	void calcul_vitesse();
 	bool move();
 	void Display(sf::RenderWindow &window);
 	static int nb_indiv();
-	bool touch(individu const& indiv) const;
-	bool repulsion(individu const& indiv) const;
-	bool attraction(individu const& indiv) const;
+	bool touch(individu* indiv) const;
+	bool repulsion(individu* indiv) const;
+	bool attraction(individu* indiv) const;
 	vect get_pos();
 	vect get_vit();
 	double get_X();
 	double get_Y();
 	double get_R();
+	std::vector<individu*> alentours(int l);
+	static void init();
 	
 	
 	private :
@@ -35,9 +39,10 @@ class individu
 	double m_rayon;
 	double m_rayon_repulsion;
 	double m_rayon_suivi;
-	static std::vector<individu*> m_Liste; // Liste des indivs...
+	static std::vector<individu*>* m_Liste[TAILLE_GRILLE][TAILLE_GRILLE]; // Liste des indivs par case
+	static int compteur;
 };
 
-int recherche(std::vector<individu*> const& L, individu* element);
+int recherche(std::vector<individu*>* L, individu* element);
 
 #endif

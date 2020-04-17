@@ -1,10 +1,8 @@
 #ifndef DEF_VECT
 #define DEF_VECT
 
-
 #include <iostream>
 #include "math.h"
-
 
 class vect
 {

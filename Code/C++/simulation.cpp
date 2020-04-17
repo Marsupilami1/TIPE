@@ -3,6 +3,8 @@
 #include "Carte_des_distances.h"
 #include <cstdlib>
 
+extern const unsigned int TAILLE_GRILLE;
+
 Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0)
 {
 	m_fenetre.setFramerateLimit(45);
@@ -11,6 +13,7 @@ Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_gril
 	
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
+	individu::init();
 }
 
 void Simulation::add_sortie(int x, int y)
@@ -22,17 +25,29 @@ void Simulation::add_indiv(double x, double y) const
 {
 	double r = 0.2;
 	bool ok = true;
+	std::vector<individu*>* sousListe;
+	individu* ind_lambda;
+	int iter;
 	
-	int run = individu::nb_indiv();
-	for(int i = 0; i<run; i++)
+	for(unsigned int i=0; i<TAILLE_GRILLE && ok; i++)
 	{
-		individu* ind_lambda = individu::getElementListe(i); // (*ind_lambda).position <-> ind_lambda->position
-		if((ind_lambda->get_pos()-vect{x,y}).norme()<ind_lambda->get_R()+r) // Si plus proches que leur rayon...
+		for(unsigned int j=0; j<TAILLE_GRILLE && ok; j++)
 		{
-			ok = false;
-			break;
+			sousListe = individu::getVecteursCase(i,j);
+			iter = sousListe->size();
+			for(int k=0; k<iter; k++)
+			{
+				ind_lambda = sousListe->at(k);
+				if((ind_lambda->get_pos()-vect{x,y}).norme()<ind_lambda->get_R()+r) // Si plus proches que leur rayon...
+				{
+					ok = false;
+					break;
+				}
+			}
 		}
 	}
+	
+	
 	if(ok)
 		new individu(x,y,r,3.*r,10*r);
 }
@@ -49,6 +64,8 @@ void Simulation::run()
 {
 	bool escape = false;
 	bool active = false;
+	std::vector<individu*>* sousListe;
+	int iter;
 	
 	for(unsigned int i=0; i<m_sorties.size(); i++)
 	{
@@ -94,19 +111,34 @@ void Simulation::run()
 		{
 			m_fenetre.clear(sf::Color::White);
 			
-			// Individus
-			int run = individu::nb_indiv();
-			for(int i = 0; i<run; i++)
+			// Mouvement individus
+			for(unsigned int i=0; i<TAILLE_GRILLE; i++)
 			{
-				individu::getElementListe(i)->calcul_vitesse();
-				escape = individu::getElementListe(i)->move();
-				if(escape)
+				for(unsigned int j=0; j<TAILLE_GRILLE; j++)
 				{
-					delete individu::getElementListe(i);
-					i--;
-					run--;
-				} else {
-					individu::getElementListe(i)->Display(m_fenetre);
+					sousListe = individu::getVecteursCase(i,j);
+					iter = sousListe->size()-1;
+					for(int k=iter; k>-1; k--)
+					{
+						sousListe->at(k)->calcul_vitesse();
+						escape = sousListe->at(k)->move();
+						if(escape)
+						{
+							delete sousListe->at(k);
+						}
+					}
+				}
+			}
+			for(unsigned int i=0; i<TAILLE_GRILLE; i++)
+			{
+				for(unsigned int j=0; j<TAILLE_GRILLE; j++)
+				{
+					sousListe = individu::getVecteursCase(i,j);
+					iter = sousListe->size();
+					for(int k=0; k<iter; k++)
+					{
+						sousListe->at(k)->Display(m_fenetre);
+					}
 				}
 			}
 			
@@ -122,10 +154,17 @@ void Simulation::run()
 			m_fenetre.display();
 		} else {
 			m_fenetre.clear(sf::Color::White);
-			int run = individu::nb_indiv();
-			for(int i = 0; i<run; i++)
+			for(unsigned int i=0; i<TAILLE_GRILLE; i++)
 			{
-				individu::getElementListe(i)->Display(m_fenetre);
+				for(unsigned int j=0; j<TAILLE_GRILLE; j++)
+				{
+					sousListe = individu::getVecteursCase(i,j);
+					iter = sousListe->size();
+					for(int k=0; k<iter; k++)
+					{
+						sousListe->at(k)->Display(m_fenetre);
+					}
+				}
 			}
 			for(unsigned int i=0; i<m_sorties.size(); i++)
 			{
