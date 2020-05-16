@@ -7,27 +7,51 @@
 \usepackage{geometry}
 \usepackage{amssymb}
 \usepackage{mathtools}
-\usepackage{marsu}
+\usepackage[squaren, cdot, derived]{SIunits} % \unit{<nb>}{<unite>}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[f]{esvect}
+\usepackage{xcolor}
+\usepackage[french]{babel}
 
 \title{Expériences physiques}
 \author{\textsc{Andrieux} Martin\\
-		\textsc{Maillet} Nathan}
+	\textsc{Maillet} Nathan}
 
 
 \begin{document}
 	\maketitle
-	\section{Phénomènes à observer}
-		\begin{itemize}
-			\item Arcs à la sortie
-			\item utilité des piliers
-			\item influence des tailles de(s) sortie(s)
-			\item contournements
-			\item influence de la majorité
+	% Premier pb : comment justifier que le comportement des billes (et/ou des fluides) est analogue à celui des individus (ou pas) ?
+	% Risque catalogue dans la présentation de plusieurs situations
+	% Plusieurs expérience montrant la simple existance d'un phénomène (ex : écoulement de sable) puis vérification de cette même existance dans la simulation, risque d'être "catalogue" ?
+	% Dans le but de valider ou d'invalider la simulation sur des points précis
+	% Recevable ? Bien vu (par le jury) ? Utile ?
+	\section{cadre des expériences}
+	\begin{itemize}[label =$\bullet$]
+		\item Limite des expériences
+		\begin{itemize}[label =$\circ$]
+			\item Liens entre le comportement de la bille et celui des individus
+			\item Abscence de collisions pour les fluides
+			\item Expérience humaine envisageable ?
 		\end{itemize}
+	\end{itemize}
+	
+	
+	\section{Phénomènes à observer et résultats attendus}
+	\begin{itemize}[label =$\bullet$]
+		\item Arcs à la sortie : les entitées ne peuvent plus sortir
+		\item Utilité des piliers : casse les arcs, repousse leur création ?
+		\item Influence de la taille des sorties (temps de sortie $\propto$ taille de la sortie ?) 
+		\item Contournements de piliers et de peronnes : V comme avec la simulation ?
+		\item (Influence de la majorité (attraction))
+	\end{itemize}
+	
+	
+	
 	\section{Protocoles d'expériences}
-		\subsection{Expérience}
-			\begin{itemize}
-				\item Acheter des billes
-				\item Faire un plateau avec du carton
-			\end{itemize}
+	\subsection{Expérience}
+	\begin{itemize}[label =$\bullet$]
+		\item Acheter des billes
+		\item Faire un plateau avec du carton
+	\end{itemize}
 \end{document}

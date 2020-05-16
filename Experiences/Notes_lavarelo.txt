@@ -1,0 +1,22 @@
+NOTES LAVARELO
+
+présenter plusieurs, pas un soucis, même bien
+choix, car donne un bon ou un mauvais résultat,
+plus fréquente ou résultats trés subtils.
+
+modelisation par bille ou fluide,
+simpliste -> si ca marche, c bien, on garde
+a voir apres coup
+Il faut tester et voir si ca marche
+
+la ccl peut "pas etre simulable par des cailloux"
+
+mécu flu au dessus d'une certaine densité
+en dessous de cette densité -> psychologie.
+
+fluide -> gravité (volonté des gens a sortir)
+meme support -> fluide puis granulaire
+
+choper des exp a refaire.
+
+COMPARER les differents modeles
