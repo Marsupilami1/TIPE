@@ -1,6 +1,8 @@
 #include "Carte_des_distances.h"
+#include <iostream>
 
 std::vector<std::vector<int>> Champ_de_vitesses;
+std::vector<vect> Distances_sorties;
 
 void voisins(std::vector<std::vector<int>> &Carte, std::vector<vect> &vois, unsigned int d)
 {
@@ -88,6 +90,8 @@ std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<
 	{
 		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = 0;
 	}
+	
+	Distances_sorties = vois;
 	
 	return Carte;
 }

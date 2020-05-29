@@ -29,6 +29,7 @@ class individu
 		double get_X();
 		double get_Y();
 		double get_R();
+		bool isPylone();
 		std::vector<individu*> alentours(int l);
 		static void init();
 	

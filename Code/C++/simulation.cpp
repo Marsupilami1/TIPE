@@ -4,6 +4,7 @@
 #include <cstdlib>
 
 extern const unsigned int TAILLE_GRILLE;
+extern std::vector<vect> Distances_sorties;
 
 Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0)
 {
@@ -78,7 +79,7 @@ void Simulation::add_indiv(double x, double y) const
 	}
 	
 	if(ok)
-		new individu(x,y,r,3*r,10*r, false);
+		new individu(x, y, r, 4*r, 10*r, false);
 }
 
 void Simulation::add_n_indiv(unsigned int n) const
@@ -95,6 +96,7 @@ void Simulation::run()
 	bool active = false;
 	std::vector<individu*>* sousListe;
 	int iter;
+	individu* ptr_indiv = NULL;
 	
 	for(unsigned int i=0; i<m_sorties.size(); i++)
 	{
@@ -139,49 +141,44 @@ void Simulation::run()
 			}
 		}
 		
+		m_fenetre.clear(sf::Color::White);
 		if(active)
 		{
-			m_fenetre.clear(sf::Color::White);
 			
 			// Mouvement individus
-			for(unsigned int i=0; i<TAILLE_GRILLE; i++)
+			for(unsigned int i=0; i<TAILLE_GRILLE*TAILLE_GRILLE; i++)
 			{
-				for(unsigned int j=0; j<TAILLE_GRILLE; j++)
+				sousListe = individu::getVecteursCase(Distances_sorties[i].get_X(),Distances_sorties[i].get_Y());
+				iter = sousListe->size()-1;
+				for(int k=iter; k>-1; k--)
 				{
-					sousListe = individu::getVecteursCase(i,j);
-					iter = sousListe->size()-1;
-					for(int k=iter; k>-1; k--)
+					ptr_indiv= sousListe->at(k);
+					ptr_indiv->calcul_vitesse();
+					escape = ptr_indiv->move();
+					if(escape)
 					{
-						// b
-						individu* ptr_indiv= sousListe->at(k);
-						ptr_indiv->calcul_vitesse();
-						escape = ptr_indiv->move();
-						if(escape)
-						{
-							delete sousListe->at(k);
-						} else {
-							ptr_indiv->Display(m_fenetre);
-						}
-						
+						delete sousListe->at(k);
+					} else {
+						ptr_indiv->Display(m_fenetre);
 					}
+					
 				}
 			}
-		
+			
 		} else {
-			m_fenetre.clear(sf::Color::White);
 			for(unsigned int i=0; i<TAILLE_GRILLE; i++)
 			{
 				for(unsigned int j=0; j<TAILLE_GRILLE; j++)
 				{
 					sousListe = individu::getVecteursCase(i,j);
-				iter = sousListe->size();
+					iter = sousListe->size();
 					for(int k=0; k<iter; k++)
 					{
 						sousListe->at(k)->Display(m_fenetre);
 					}
 				}
 			}
-	}
+		}
 		// Sorties
 		for(unsigned int i=0; i<m_sorties.size(); i++)
 		{

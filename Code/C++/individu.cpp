@@ -53,8 +53,9 @@ void individu::calcul_vitesse()
 	    m_vitesse = {0,0};
 	} else {
     	double alpha = 0.1; // Vitesse du champ de vitesse
-    	double beta = 0.4; // Influence des autres individus
-    	//~ double gamma = 0.1; // Transfert de vitesse à un autre individu
+    	double beta = 0.3; // Influence des autres individus
+    	//~ double gamma = 0.2; // Inertie
+    	//~ double delta = 0.1; // Transfert de vitesse à un autre individu
     	int run = 0;
     	std::vector<vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
     	std::vector<individu*> indiv_alentours(0);
@@ -66,7 +67,7 @@ void individu::calcul_vitesse()
     	vect vit = {0,0};
     	if(v_chemin > -1)
     		vit = liste_vitesse[v_chemin];
-    	m_vitesse = alpha*(vit.normalise());
+    	m_vitesse = alpha*vit.normalise();
     	m_vitesse.rotate(distribution(generator));
     	
     	// Influence des autres
@@ -87,26 +88,26 @@ void individu::calcul_vitesse()
     	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
     		return ;
     	
-    	int nb_gauche = 0;
-    	int nb_droite = 0;
     	indiv_alentours = alentours(m_rayon_repulsion);
     	run=indiv_alentours.size();
     	for(int i=0; i<run; i++)
     	{
-    		if(repulsion(indiv_alentours[i]))
+    		if(repulsion(indiv_alentours[i]) && indiv_alentours[i]->isPylone())
     		{
-    			if((indiv_alentours[i]->get_pos()-m_position)%m_vitesse>0)
-					nb_gauche++;
-    			    //nb_gauche += indiv_alentours[i]->get_R();
-    			else
-					nb_droite++;
-    			    //nb_droite += indiv_alentours[i]->get_R();
+    			if((indiv_alentours[i]->get_vit()-m_position)%m_vitesse < 0)
+					m_vitesse.rotate(PI/4.);
+				else
+					m_vitesse.rotate(-PI/4.);
+				break;
     		}
     	}
-    	if(nb_gauche+nb_droite>0)
+    	for(int i=0; i<run; i++)
     	{
-    	    m_vitesse.rotate((nb_gauche>nb_droite? 1 : -1)*PI/4);
-    	    m_vitesse /= 2;
+    		if(repulsion(indiv_alentours[i]))
+    		{
+    			m_vitesse /= 2;
+    			break;
+    		}
     	}
     	
     	
@@ -203,7 +204,7 @@ int individu::nb_indiv()
 
 bool individu::touch(individu* indiv) const
 {
-	return (indiv != this && ((m_position+m_vitesse)-(indiv->m_position+indiv->m_vitesse)).norme() < m_rayon+indiv->m_rayon);
+	return (indiv != this && ((m_position+m_vitesse)-(indiv->m_position)).norme() < m_rayon+indiv->m_rayon);
 }
 
 bool individu::repulsion(individu* indiv) const
@@ -237,6 +238,11 @@ double individu::get_Y()
 double individu::get_R()
 {
 	return m_rayon;
+}
+
+bool individu::isPylone()
+{
+    return m_pylone;
 }
 
 std::vector<individu*> individu::alentours(int l)
