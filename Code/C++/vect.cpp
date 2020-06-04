@@ -64,6 +64,11 @@ double vect::scalaire(vect const& v) const
 	return m_x * v.m_x + m_y * v.m_y;
 }
 
+double vect::vectoriel(vect const& v) const
+{
+	return m_x * v.m_y - m_y * v.m_x;
+}
+
 vect& vect::operator+=(vect const& v)
 {
 	m_x += v.m_x;
@@ -133,6 +138,11 @@ vect operator*(vect const& u, double const& k)
 double operator*(vect const& u, vect const& v)
 {
 	return u.scalaire(v);
+}
+
+double operator%(vect const& u, vect const& v)
+{
+	return u.vectoriel(v);
 }
 
 vect operator/(vect const& u, double const& k)
