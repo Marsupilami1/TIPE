@@ -22,8 +22,8 @@ individu::individu(double pos_x, double pos_y, double rayon, double rayon_repuls
 	m_rayon_repulsion = rayon_repulsion;
 	m_rayon_suivi = rayon_CdV;
 	m_pylone = is_pylone;
-    
-	compteur++;
+    if(!is_pylone)
+		compteur++;
 	
 	m_Liste[(int)pos_x][(int)pos_y]->push_back(this);
 }
@@ -137,7 +137,7 @@ void individu::calcul_vitesse()
     	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
     		return ;
     	
-    	// Si collision (!) -> possibilité de rester bloqué, même sans collision.
+    	
     	indiv_alentours = alentours(1);
     	run=indiv_alentours.size();
     	for(int i=0; i<run; i++)

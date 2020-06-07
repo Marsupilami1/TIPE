@@ -20,6 +20,7 @@ class Simulation
 		unsigned int m_taille_grille;
 		sf::RenderWindow m_fenetre;
 		std::vector<vect> m_sorties;
+		std::vector<vect> m_murs;
 };
 
 #endif

@@ -71,7 +71,7 @@ void voisins(std::vector<std::vector<int>> &Carte, std::vector<vect> &vois, unsi
 	}
 }
 
-std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<vect> sorties)
+std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<vect> sorties, const std::vector<vect> murs)
 {
 	std::vector<std::vector<int>> Carte(n, std::vector<int>(n,0));
 	std::vector<vect> vois(0);
@@ -80,21 +80,40 @@ std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<
 		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = -1;
 		vois.push_back(sorties.at(i));
 	}
+	for(unsigned int i=0; i<murs.size(); i++)
+		Carte.at(murs.at(i).get_X()).at(murs.at(i).get_Y()) = 3*n+10;
 	
 	for(unsigned int k=0; k<=3*n; k++)
 	{
 		voisins(Carte, vois, k+1);
 	}
 	
-	for(unsigned int i=0; i<sorties.size(); i++)
+	/*
+	for(unsigned int i=0; i<murs.size(); i++)
 	{
-		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = 0;
+	    int X = murs.at(i).get_X();
+	    int Y = murs.at(i).get_Y();
+	    
+	    if(Carte.at(X+1).at(Y) < Carte.at(X+2).at(Y)) //Sortie "vers" la gauche
+	        Carte.at(X+1).at(Y)++;
+	    if(Carte.at(X-1).at(Y) < Carte.at(X-2).at(Y)) //Sortie "vers" la droite
+	        Carte.at(X-1).at(Y)++;
+	    if(Carte.at(X).at(Y+1) < Carte.at(X).at(Y+2)) //Sortie "vers" le haut
+	        Carte.at(X).at(Y+1)++;
+	    if(Carte.at(X).at(Y-1) < Carte.at(X).at(Y-2)) //Sortie "vers" le bas
+	        Carte.at(X).at(Y-1)++;
 	}
+	*/
+	
+	for(unsigned int i=0; i<sorties.size(); i++)
+		Carte.at(sorties.at(i).get_X()).at(sorties.at(i).get_Y()) = 0;
 	
 	Distances_sorties = vois;
 	
 	return Carte;
 }
+
+
 
 int direction(int octet)
 {
@@ -109,9 +128,7 @@ int direction(int octet)
 		g++;
 		
 		if(g==8)
-		{
 			break;
-		}
 	}
 	
 	while (octet%2 == 0)
@@ -134,6 +151,36 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 	int value = 0;
 	int octet = 0;
 	std::vector<std::vector<int>> Champs(n, std::vector<int>(n,0));
+	//~ for(unsigned int i=0; i<Distances_sorties.size(); i++)
+	//~ {
+		//~ int x = Distances_sorties.at(i).get_X();
+		//~ int y = Distances_sorties.at(i).get_Y();
+		//~ value = distances[x][y];
+		//~ octet = 0;
+		
+		//~ if(value != 0)
+		//~ {
+			//~ octet = (x+1<n && y<n && x+1>=0 && y>=0 && distances[x+1][y] < value && distances[x+1][y] > -2);
+			//~ octet =  octet << 1;
+			//~ octet += (x+1<n && y-1<n && x+1>=0 && y-1>=0 && distances[x+1][y-1] < value && distances[x+1][y-1] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x<n && y-1<n && x>=0 && y-1>=0 && distances[x][y-1] < value && distances[x][y-1] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x-1<n && y-1<n && x-1>=0 && y-1>=0 && distances[x-1][y-1] < value && distances[x-1][y-1] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x-1<n && y<n && x-1>=0 && y>=0 && distances[x-1][y] < value && distances[x-1][y] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x-1<n && y+1<n && x-1>=0 && y+1>=0 && distances[x-1][y+1] < value && distances[x-1][y+1] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x<n && y+1<n && x>=0 && y+1>=0 && distances[x][y+1] < value && distances[x][y+1] > -2);
+			//~ octet <<= 1;
+			//~ octet += (x+1<n && y+1<n && x+1>=0 && y+1>=0 && distances[x+1][y+1] < value && distances[x+1][y+1] > -2);
+			
+			//~ Champs[x][y] = direction(octet);
+		//~ } else {
+			//~ Champs[x][y] = -1;
+		//~ }
+	//~ }
 	for(int y=0; y<n; y++) // Balayage de la carte des distances
 	{
 		for(int x=0; x<n; x++)
@@ -171,7 +218,7 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 
 
 
-void calculs_champs(const unsigned int n, const std::vector<vect> sorties)
+void calculs_champs(const unsigned int n, const std::vector<vect> sorties, const std::vector<vect> murs)
 {
-	Champ_de_vitesses = vitesses(distances(n, sorties));
+	Champ_de_vitesses = vitesses(distances(n, sorties, murs));
 }

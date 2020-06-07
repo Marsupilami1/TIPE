@@ -6,11 +6,9 @@
 extern const unsigned int TAILLE_GRILLE;
 extern std::vector<vect> Distances_sorties;
 
-Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0)
+Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0), m_murs(0)
 {
-	m_fenetre.setFramerateLimit(45);
-	sf::ContextSettings settings;
-	settings.antialiasingLevel = 5;
+	m_fenetre.setFramerateLimit(60);
 	
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
@@ -24,7 +22,7 @@ void Simulation::add_sortie(int x, int y)
 
 void Simulation::add_pylone(double x, double y)
 {
-	double r = 1;
+	double r = 0.5;
 	bool ok = true;
 	std::vector<individu*>* sousListe;
 	individu* ind_lambda;
@@ -49,7 +47,10 @@ void Simulation::add_pylone(double x, double y)
 	}
 	
 	if(ok)
+	{
+		m_murs.push_back({x,y});
 		new individu(x,y,r,0,0, true);
+	}
 }
 
 void Simulation::add_indiv(double x, double y) const
@@ -122,18 +123,18 @@ void Simulation::run()
 					if(event.key.code == sf::Keyboard::Return)
 					{
 						active = true;
-						calculs_champs(m_taille_grille, m_sorties);
+						calculs_champs(m_taille_grille, m_sorties, m_murs);
 					}
 					break;
 					
 				case(sf::Event::MouseButtonPressed) :
 					if(event.mouseButton.button == sf::Mouse::Left)
-						add_n_indiv(100);
-						//~ add_indiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
+						//~ add_n_indiv(100);
+						add_indiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
 					else if(event.mouseButton.button == sf::Mouse::Right)
 						add_sortie(event.mouseButton.x/10, event.mouseButton.y/10);
 					else if(event.mouseButton.button == sf::Mouse::Middle)
-						add_pylone(event.mouseButton.x/10, event.mouseButton.y/10);
+						add_pylone(event.mouseButton.x/10 +.5, event.mouseButton.y/10 +.5);
 					break;
 				
 				default :
@@ -179,6 +180,11 @@ void Simulation::run()
 				}
 			}
 		}
+		//Murs
+		for(unsigned int i=0; i<m_murs.size(); i++)
+		{
+		    individu::getVecteursCase(m_murs.at(i).get_X(), m_murs.at(i).get_Y())->at(0)->Display(m_fenetre);
+		}
 		// Sorties
 		for(unsigned int i=0; i<m_sorties.size(); i++)
 		{
@@ -196,3 +202,7 @@ void Simulation::run()
 		m_fenetre.close();
 	}
 }
+
+
+
+
