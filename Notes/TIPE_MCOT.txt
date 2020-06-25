@@ -1,0 +1,36 @@
+Titre : Modélisation des foules lors d'évacuations
+
+Thème : Enjeux Sociétaux
+
+Matières : Informatique (modélisation) / Physique
+
+Mots-clés / Key-words :
+Mouvements de foules/Crowd movement, simulation numérique/digital simulation, modèle/model, analogie physique/physical analogy, évacuation/evacuation.
+
+
+Comment réagissent les foules dans un contexte d'évacutation ? (et alors pourquoi faire un modèle et les experiences valident ou invalident le modèle qui permet d'étudier les foules)
+THE problematique (true god) :
+Il s'agit de construire et d'étudier un modèle de simulation d'évacuations de foules. Le comportement de la simulation programmé en C++ sera déduit d'expériences sur des mileux granulaires et des fluides. En étudiant deux situations distinctes, nous verrons comment assurer une évacuation plus rapide et moins dangereuse.
+
+
+Objectifs :
+1) Expériences (cas général)
+2) Modèle (cas général)
+3) Confrontation (séparer les situations)
+
+
+Objectifs :
+ - detail des trois parties
+ - resultats attendus
+
+Meilleur Ancrage : 
+Les mouvements de foules ne sont pas toujours maitrisables. Ils peuvent blesser certaines personnes, voire les tuer. Au vue de | la difficulté de réaliser régulièrement des | expériences a grandes échelles, la nécessité d'une modélisation numérique s'inscrit dans la création d'une société plus sûre.
+-> 46 mots 
+
+Motivation du choix de l'étude :
+La perspective d'un TIPE comprenant une importante part d'informatique m'interresse grandement. Je trouve que l'étude d'un sujet concret et moderne | comme les  foules est aussi motivant et que les acquis informatiques que peuvent m'apporter ce TIPE sont complémentaires au programme. |
+-> 40 mots
+
+Motivation du choix de l'étude :
+La perspective d'un TIPE à dominante informatique m'interresse particulièrement. Je me suis donc mis en quête d'un | phénomène permettant la réalisation d'une simulation numérique. Le sujet des mouvements de foules m'a séduit, il est en | rapport avec le theme et m'intéresse particulièrement.
+-> 43 mots
