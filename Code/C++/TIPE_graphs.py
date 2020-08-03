@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 subprocess.call("./bin/Debug/TIPE_w_sfml.exe") #Execute le cpp
 
+#.py a mettre dans le même dossier que TIPE.txt
 resultats=open("./TIPE.txt","r") #Résultats notés au format tps//nb_indiv
 
 indiv,temps=[],[]
