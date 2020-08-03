@@ -22,9 +22,9 @@ individu::individu(double pos_x, double pos_y, double rayon, double rayon_repuls
 	m_rayon_repulsion = rayon_repulsion;
 	m_rayon_suivi = rayon_CdV;
 	m_pylone = is_pylone;
-    
+
 	compteur++;
-	
+
 	m_Liste[(int)pos_x][(int)pos_y]->push_back(this);
 }
 
@@ -59,7 +59,7 @@ void individu::calcul_vitesse()
     	int run = 0;
     	std::vector<vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
     	std::vector<individu*> indiv_alentours(0);
-    	
+
     	// Vitesse du champs de vitesses
     	int x = m_position.get_X();
     	int y = m_position.get_Y();
@@ -69,7 +69,7 @@ void individu::calcul_vitesse()
     		vit = liste_vitesse[v_chemin];
     	m_vitesse = alpha*vit.normalise();
     	m_vitesse.rotate(distribution(generator));
-    	
+
     	// Influence des autres
     	indiv_alentours = alentours(m_rayon_suivi);
     	run=indiv_alentours.size();
@@ -83,11 +83,11 @@ void individu::calcul_vitesse()
     	}
     	m_vitesse += beta*influence;
     	m_vitesse = m_vitesse.normalise()*alpha;
-    	
+
     	// Si Approche d'un autre
     	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
     		return ;
-    	
+
     	indiv_alentours = alentours(m_rayon_repulsion);
     	run=indiv_alentours.size();
     	for(int i=0; i<run; i++)
@@ -109,8 +109,8 @@ void individu::calcul_vitesse()
     			break;
     		}
     	}
-    	
-    	
+
+
     	// Si sortie de zone
     	m_position += m_vitesse;
     	if((m_position).get_Y()+m_rayon>=TAILLE_GRILLE)
@@ -133,10 +133,10 @@ void individu::calcul_vitesse()
     	{
     		m_position -= m_vitesse;
     	}
-    	
+
     	if(Champ_de_vitesses[(m_position+m_vitesse).entier().get_X()][(m_position+m_vitesse).entier().get_Y()] == -1)
     		return ;
-    	
+
     	// Si collision (!) -> possibilité de rester bloqué, même sans collision.
     	indiv_alentours = alentours(1);
     	run=indiv_alentours.size();
@@ -158,44 +158,26 @@ bool individu::move()
 	    return false;
 	int x = m_position.get_X();
 	int y = m_position.get_Y();
-	
+
 	m_position += m_vitesse;
-	
+
 	int xp = m_position.entier().get_X();
 	int yp = m_position.entier().get_Y();
-	
+
 	if(Champ_de_vitesses.at(xp).at(yp) == -1)
 	{
 		m_position -= m_vitesse;
 		return true;
 	}
-	
+
 	if(x!=xp || y!=yp)
 	{
 		m_Liste[x][y]->erase(m_Liste[x][y]->begin()+recherche(m_Liste[x][y],this));
 		m_Liste[xp][yp]->push_back(this);
 	}
-	
+
 	return false;
 }
-
-void individu::Display(sf::RenderWindow &window)
-{
-	
-	sf::CircleShape cercle(10*m_rayon);
-	if(m_pylone)
-	{
-	    cercle.setFillColor(sf::Color(0,0,0));
-	} else {
-    	cercle.setFillColor(sf::Color(250,10,20));
-	}
-	cercle.setPosition(10*(m_position.get_X()-m_rayon), 10*(m_position.get_Y()-m_rayon));
-	cercle.setOutlineThickness(1);
-	cercle.setOutlineColor(sf::Color::Black);
-	window.draw(cercle);
-	
-}
-
 
 int individu::nb_indiv()
 {

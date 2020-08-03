@@ -15,10 +15,9 @@ class Simulation
 		void add_indiv(double x, double y) const;
 		void add_n_indiv(unsigned int n) const;
 		void run();
-	
+
 	private :
 		unsigned int m_taille_grille;
-		sf::RenderWindow m_fenetre;
 		std::vector<vect> m_sorties;
 };
 

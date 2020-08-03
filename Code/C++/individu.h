@@ -14,12 +14,11 @@ class individu
 	public :
 		individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV, bool is_pylone);
 		~individu();
-		
+
 		void afficher();
 		static std::vector<individu*>* getVecteursCase(int x, int y);
 		void calcul_vitesse();
 		bool move();
-		void Display(sf::RenderWindow &window);
 		static int nb_indiv();
 		bool touch(individu* indiv) const;
 		bool repulsion(individu* indiv) const;
@@ -32,8 +31,8 @@ class individu
 		bool isPylone();
 		std::vector<individu*> alentours(int l);
 		static void init();
-	
-	
+
+
 	private :
 		vect m_position;
 		vect m_vitesse;
