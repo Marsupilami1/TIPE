@@ -92,12 +92,15 @@ void individu::calcul_vitesse()
     	run=indiv_alentours.size();
     	for(int i=0; i<run; i++)
     	{
-    		if(repulsion(indiv_alentours[i]) && indiv_alentours[i]->isPylone())
+    		if(repulsion(indiv_alentours[i]) && indiv_alentours[i]->get_vit()==0)
     		{
     			if((indiv_alentours[i]->get_vit()-m_position)%m_vitesse < 0)
-					m_vitesse.rotate(PI/4.);
+					m_vitesse.rotate(PI/3.7+sin(m_vitesse.norme()));
 				else
-					m_vitesse.rotate(-PI/4.);
+                    if((indiv_alentours[i]->get_vit()-m_position)%m_vitesse == 0 && indiv_alentours[i]->isPylone())
+                        m_vitesse.rotate(PI+sin(m_vitesse.norme()));
+                    else
+                        m_vitesse.rotate(-PI/3.7+sin(m_vitesse.norme()));
 				break;
     		}
     	}
@@ -178,6 +181,24 @@ bool individu::move()
 
 	return false;
 }
+
+void individu::Display(sf::RenderWindow &window)
+{
+
+	sf::CircleShape cercle(10*m_rayon);
+	if(m_pylone)
+	{
+	    cercle.setFillColor(sf::Color(0,0,0));
+	} else {
+    	cercle.setFillColor(sf::Color(250,10,20));
+	}
+	cercle.setPosition(10*(m_position.get_X()-m_rayon), 10*(m_position.get_Y()-m_rayon));
+	cercle.setOutlineThickness(1);
+	cercle.setOutlineColor(sf::Color::Black);
+	window.draw(cercle);
+
+}
+
 
 int individu::nb_indiv()
 {
