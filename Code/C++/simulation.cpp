@@ -8,7 +8,7 @@ extern std::vector<Vect> Distances_sorties;
 
 Simulation::Simulation(unsigned int taille_grille) : m_taille_grille(taille_grille), m_fenetre(sf::VideoMode(10*taille_grille, 10*taille_grille), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0), m_murs(0)
 {
-	// m_fenetre.setFramerateLimit(25);
+	m_fenetre.setFramerateLimit(45);
 
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
@@ -124,6 +124,7 @@ void Simulation::run()
 					{
 						active = true;
 						calculs_champs(m_taille_grille, m_sorties, m_murs);
+						std::cout << "Calcul du champ terminé" << std::endl;
 					}
 					break;
 

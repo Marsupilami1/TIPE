@@ -153,12 +153,15 @@ Vect operator/(Vect const& u, double const& k)
 Vect Vect::normalise() const
 {
 	Vect id(*this);
-	return (id/(id.norme()));
+	if (id == Vect(0.,0.)) {
+		return id;
+	} else {
+		return (id/(id.norme()));
+	}
 }
-
 
 std::ostream& operator<<(std::ostream &flux, Vect const& u)
 {
-    u.afficher();
-    return flux;
+	u.afficher();
+	return flux;
 }

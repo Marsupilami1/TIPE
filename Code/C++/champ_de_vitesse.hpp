@@ -4,7 +4,7 @@
 #include "vect.hpp"
 #include <vector>
 
-void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect> &vois, unsigned int d);
+void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect> &vois, int d);
 std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<Vect> sorties, const std::vector<Vect> murs);
 
 int direction(int octet);

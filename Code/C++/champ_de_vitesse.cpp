@@ -4,7 +4,7 @@
 std::vector<std::vector<int>> Champ_de_vitesses;
 std::vector<Vect> Distances_sorties;
 
-void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect> &vois, unsigned int d)
+void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect> &vois, int d)
 {
 	unsigned int run = vois.size();
 	for(unsigned int i=0; i<run; i++)

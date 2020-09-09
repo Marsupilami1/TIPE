@@ -48,7 +48,7 @@ std::vector<Individu*>* Individu::getVecteursCase(int x, int y)
 
 void Individu::calculVitesse()
 {
-	int run = 0;
+	unsigned int run = 0;
 	std::vector<Vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 	std::vector<Individu*> indiv_alentours(0);
 
@@ -113,7 +113,7 @@ void Individu::calculVitesse()
 
 	indiv_alentours = alentours(1);
 	run = indiv_alentours.size();
-	for(int i=0; i<run; i++)
+	for(unsigned int i=0; i<run; i++)
 	{
 		if(touch(indiv_alentours[i]))
 		{
@@ -123,7 +123,6 @@ void Individu::calculVitesse()
 	}
 }
 
-
 bool Individu::move()
 {
 	if(m_pylone)
@@ -131,10 +130,14 @@ bool Individu::move()
 	int x = m_position.getX();
 	int y = m_position.getY();
 
-	m_position += m_vitesse;
-
 	int xp = m_position.entier().getX();
 	int yp = m_position.entier().getY();
+	if(Champ_de_vitesses.at(xp).at(yp) == -1)
+		return true;
+
+	m_position += m_vitesse;
+	xp = m_position.entier().getX();
+	yp = m_position.entier().getY();
 
 	if(Champ_de_vitesses.at(xp).at(yp) == -1)
 	{
@@ -143,7 +146,7 @@ bool Individu::move()
 	}
 
 	if(x!=xp || y!=yp)
-	{
+	{ // A checker
 		m_liste[x][y]->erase(m_liste[x][y]->begin()+recherche(m_liste[x][y],this));
 		m_liste[xp][yp]->push_back(this);
 	}
@@ -239,6 +242,7 @@ std::vector<Individu*> Individu::alentours(int l)
 int recherche(std::vector<Individu*>* L, Individu* element)
 {
 	unsigned int i = 0;
+	// while (i < L->size() && L->at(i) != element)
 	while (L->at(i) != element)
 	{
 		i++;
