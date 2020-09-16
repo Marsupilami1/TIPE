@@ -1,0 +1,15 @@
+* Expériences
+** importance dans la présentation, à côté du programme
+* présentation de la simulation :
+** uniquement les résultats ou aussi le code
+** fonctionnement général
+** points clés
+** rien ?
+** les deux
+** réserver pour l'entretient
+* importance de l'exploitation python
+** régression ?
+** divergences avec l'expérience
+* Approche
+** simulation de foule
+** mouvements de foules
