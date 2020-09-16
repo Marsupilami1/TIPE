@@ -9,7 +9,6 @@
 #include "vect.hpp"
 #include "champ_de_vitesse.hpp"
 
-extern std::vector<Vect> Distances_sorties;
 class Individu;
 
 template <unsigned int TAILLE_GRILLE>
@@ -17,28 +16,41 @@ class Simulation
 {
 	public :
 		Simulation();
+		
 		void addSortie(int x, int y);
-		void addPylone(double x, double y);
+		void addPylone(unsigned int x, unsigned int y);
 		void addIndiv(double x, double y);
 		void addNIndiv(unsigned int n);
 		void run();
 		std::vector<Individu*>* getVecteursCase(int x, int y) const;
 		std::vector<Individu*> alentours(int l, unsigned int x, unsigned int y);
-		std::vector<Individu*>* m_liste[TAILLE_GRILLE][TAILLE_GRILLE];
+		int champVitesses(const unsigned int l, const unsigned int c) const;
 
 	private :
 		sf::RenderWindow m_fenetre;
 		std::vector<Vect> m_sorties;
 		std::vector<Vect> m_murs;
+		std::vector<Individu*>* m_liste[TAILLE_GRILLE][TAILLE_GRILLE];
+		std::vector<Vect>* m_distances_sorties;
+		std::vector<std::vector<int>>* m_champ_vitesses;
 		int m_compteur;
 };
 
 /* Implementation */
 template<unsigned int TAILLE_GRILLE>
-Simulation<TAILLE_GRILLE>::Simulation() : m_fenetre(sf::VideoMode(10*TAILLE_GRILLE, 10*TAILLE_GRILLE), "Simulation evacuation", sf::Style::Close | sf::Style::Titlebar), m_sorties(0), m_murs(0)
+Simulation<TAILLE_GRILLE>::Simulation() :								\
+	m_fenetre(sf::VideoMode(10*TAILLE_GRILLE, 10*TAILLE_GRILLE), "Simulation evacuation", \
+			  sf::Style::Close | sf::Style::Titlebar),					\
+	m_sorties(0), m_murs(0)
 {
-	// m_fenetre.setFramerateLimit(45);
+	m_champ_vitesses = new std::vector<std::vector<int>>(TAILLE_GRILLE);
+	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
+		(*m_champ_vitesses)[i] = std::vector<int>(TAILLE_GRILLE, 0);
+	}
 
+	m_distances_sorties = new std::vector<Vect>;
+
+	m_fenetre.setFramerateLimit(45);
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
 	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
@@ -46,6 +58,7 @@ Simulation<TAILLE_GRILLE>::Simulation() : m_fenetre(sf::VideoMode(10*TAILLE_GRIL
 			m_liste[i][j] = new std::vector<Individu*>;
 		}
 	}
+
 	m_compteur = 0;
 }
 
@@ -56,7 +69,7 @@ void Simulation<TAILLE_GRILLE>::addSortie(int x, int y)
 }
 
 template<unsigned int TAILLE_GRILLE>
-void Simulation<TAILLE_GRILLE>::addPylone(double x, double y)
+void Simulation<TAILLE_GRILLE>::addPylone(unsigned int x, unsigned int y)
 {
 	double r = 0.35;
 	bool ok = true;
@@ -73,7 +86,7 @@ void Simulation<TAILLE_GRILLE>::addPylone(double x, double y)
 			for(int k=0; k<iter; k++)
 			{
 				ind_lambda = sous_liste->at(k);
-				if((ind_lambda->getPos()-Vect{x,y}).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
+				if((ind_lambda->getPos()-Vect(x,y)).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
 				{
 					ok = false;
 					break;
@@ -84,9 +97,9 @@ void Simulation<TAILLE_GRILLE>::addPylone(double x, double y)
 
 	if(ok)
 	{
-		m_murs.push_back({x,y});
-		Individu* ptr_indiv = new Individu(x,y,r,0,0, true);
-		m_liste[int(x)][int(y)]->push_back(ptr_indiv);
+		m_murs.push_back(Vect(x,y));
+		Individu* ptr_indiv = new Individu(x+0.5,y+0.5,r,0,0, true);
+		m_liste[x][y]->push_back(ptr_indiv);
 	}
 }
 
@@ -139,8 +152,10 @@ void Simulation<TAILLE_GRILLE>::run()
 {
 	bool escape = false;
 	bool active = false;
+	bool middle_pressed = false;
 	std::vector<Individu*>* sous_liste;
 	int iter;
+	unsigned int nb_cases = 0;
 	Individu* ptr_indiv = NULL;
 
 	for(unsigned int i=0; i<m_sorties.size(); i++)
@@ -152,7 +167,7 @@ void Simulation<TAILLE_GRILLE>::run()
 	}
 	m_fenetre.display();
 
-	while (m_fenetre.isOpen() && ((m_compteur != 0) || !(active)))
+	while (m_fenetre.isOpen() && ((m_compteur > 0) || !(active)))
 	{
 		sf::Event event; // Boucle d'événements
 		while (m_fenetre.pollEvent(event))
@@ -167,19 +182,34 @@ void Simulation<TAILLE_GRILLE>::run()
 					if(event.key.code == sf::Keyboard::Return)
 					{
 						active = true;
-						calculs_champs(TAILLE_GRILLE, m_sorties, m_murs);
+						calculs_champs(TAILLE_GRILLE, m_sorties, m_murs, m_distances_sorties, m_champ_vitesses);
+						nb_cases = m_distances_sorties->size();
 						std::cout << "Calcul du champ terminé" << std::endl;
 					}
 					break;
 
 				case(sf::Event::MouseButtonPressed) :
 					if(event.mouseButton.button == sf::Mouse::Left)
-						// addNIndiv(100);
-						addIndiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
+						addNIndiv(100);
+						// addIndiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
 					else if(event.mouseButton.button == sf::Mouse::Right)
 						addSortie(event.mouseButton.x/10, event.mouseButton.y/10);
 					else if(event.mouseButton.button == sf::Mouse::Middle)
-						addPylone(event.mouseButton.x/10 +.5, event.mouseButton.y/10 +.5);
+					{
+						// Le placement des pylones n'est pas parfait
+						addPylone(event.mouseButton.x/10, event.mouseButton.y/10);
+						middle_pressed = true;
+					}
+					break;
+
+				case(sf::Event::MouseButtonReleased) :
+					if(event.mouseButton.button == sf::Mouse::Middle)
+						middle_pressed = false;
+					break;
+
+				case(sf::Event::MouseMoved) :
+					if(middle_pressed)
+						addPylone(event.mouseMove.x/10, event.mouseMove.y/10);
 					break;
 
 				default :
@@ -191,9 +221,9 @@ void Simulation<TAILLE_GRILLE>::run()
 		if(active)
 		{
 			// Mouvement individus
-			for(unsigned int i=0; i<TAILLE_GRILLE*TAILLE_GRILLE; i++)
+			for(unsigned int i=0; i<nb_cases; i++)
 			{
-				sous_liste = getVecteursCase(Distances_sorties[i].getX(),Distances_sorties[i].getY());
+				sous_liste = getVecteursCase(m_distances_sorties->at(i).getX(),m_distances_sorties->at(i).getY());
 				iter = sous_liste->size()-1;
 				for(int k=iter; k>-1; k--)
 				{
@@ -201,7 +231,7 @@ void Simulation<TAILLE_GRILLE>::run()
 					ptr_indiv->calculVitesse(this);
 					int x = ptr_indiv->getX();
 					int y = ptr_indiv->getY();
-					escape = ptr_indiv->move();
+					escape = ptr_indiv->move(m_champ_vitesses);
 					int xp = ptr_indiv->getX();
 					int yp = ptr_indiv->getY();
 					if (x != xp || y != yp)
@@ -252,9 +282,11 @@ void Simulation<TAILLE_GRILLE>::run()
 
 	if(m_fenetre.isOpen())
 	{
-		std::cout << "Simulation Terminée" << std::endl;
+		std::cout << "Simulation Terminee" << std::endl;
 		m_fenetre.close();
 	}
+	delete m_champ_vitesses;
+	delete m_distances_sorties;
 }
 
 template<unsigned int TAILLE_GRILLE>
@@ -281,6 +313,12 @@ std::vector<Individu*> Simulation<TAILLE_GRILLE>::alentours(int l, unsigned int 
 		}
 	}
 	return lindiv;
+}
+
+template<unsigned int TAILLE_GRILLE>
+int Simulation<TAILLE_GRILLE>::champVitesses(const unsigned int l, const unsigned int c) const
+{
+	return m_champ_vitesses->at(l).at(c);
 }
 
 #endif

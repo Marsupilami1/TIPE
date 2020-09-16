@@ -10,8 +10,6 @@ const double PI = 3.14159265358979323846264338427950;
 std::default_random_engine generator (std::chrono::system_clock::now().time_since_epoch().count());
 std::normal_distribution<double> distribution(0.,PI/12.);
 
-extern std::vector<std::vector<int>> Champ_de_vitesses;
-
 Individu::Individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV, bool is_pylone)
 {
 	m_position = {pos_x, pos_y};
@@ -39,13 +37,13 @@ void Individu::calculVitesse(Simulation<40>* simul)
 	// Vitesse du champs de vitesses
 	int x = m_position.getX();
 	int y = m_position.getY();
-	int v_chemin = Champ_de_vitesses[x][y];
+	int v_chemin = simul->champVitesses(x, y);
 	Vect vit = {0,0};
 	if(v_chemin > -1)
 		vit = liste_vitesse[v_chemin];
 	m_vitesse = alpha*vit.normalise();
 	m_vitesse.rotate(distribution(generator));
-	if(Champ_de_vitesses[(m_position+m_vitesse).entier().getX()][(m_position+m_vitesse).entier().getY()] == -1)
+	if(simul->champVitesses((m_position+m_vitesse).getX(), (m_position+m_vitesse).getY()) == -1)
 		return ;
 
 	// Si repulsion
@@ -68,29 +66,31 @@ void Individu::calculVitesse(Simulation<40>* simul)
 		m_vitesse.rotate(left<right ? PI/3.5 : -PI/3.5);
 
 	// Si sortie de zone
+	// Si un individu est déplacé mais qu'il change de case dans l'opération,
+	// alors il ne sera pas détruit s'il le faut
 	m_position += m_vitesse;
-	if((m_position).getY()+m_rayon>=TAILLE_GRILLE)
+	if(getY()+m_rayon >= TAILLE_GRILLE)
 	{
-		m_position = {m_position.getX()+(TAILLE_GRILLE-m_position.getY()-m_rayon)*m_vitesse.getX()/(m_vitesse.getY()),TAILLE_GRILLE-m_rayon};
-		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().getX()][m_position.entier().getY()]].normalise());
-	} else if(m_position.getY()<m_rayon)
+		m_position = {getX()+(TAILLE_GRILLE-getY()-m_rayon)*m_vitesse.getX()/(m_vitesse.getY()),TAILLE_GRILLE-m_rayon};
+		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+	} else if(getY() < m_rayon)
 	{
-		m_position = {m_position.getX()+(m_rayon-m_position.getY())*m_vitesse.getX()/(m_vitesse.getY()),m_rayon};
-		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().getX()][m_position.entier().getY()]].normalise());
-	} else if((m_position).getX()+m_rayon>=TAILLE_GRILLE)
+		m_position = {getX()+(m_rayon-getY())*m_vitesse.getX()/(m_vitesse.getY()),m_rayon};
+		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+	} else if(getX()+m_rayon >= TAILLE_GRILLE)
 	{
-		m_position = {TAILLE_GRILLE-m_rayon,m_position.getY()+(TAILLE_GRILLE-m_position.getX()-m_rayon)*m_vitesse.getY()/(m_vitesse.getX())};
-		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().getX()][m_position.entier().getY()]].normalise());
-	} else if(m_position.getX()<m_rayon)
+		m_position = {TAILLE_GRILLE-m_rayon,getY()+(TAILLE_GRILLE-getX()-m_rayon)*m_vitesse.getY()/(m_vitesse.getX())};
+		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+	} else if(getX() < m_rayon)
 	{
-		m_position = {m_rayon,m_position.getY()+(m_rayon-m_position.getX())*m_vitesse.getY()/(m_vitesse.getX())};
-		m_vitesse = alpha*(liste_vitesse[Champ_de_vitesses[m_position.entier().getX()][m_position.entier().getY()]].normalise());
+		m_position = {m_rayon,getY()+(m_rayon-getX())*m_vitesse.getY()/(m_vitesse.getX())};
+		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
 	} else
 	{
 		m_position -= m_vitesse;
 	}
 
-	if(Champ_de_vitesses[(m_position+m_vitesse).entier().getX()][(m_position+m_vitesse).entier().getY()] == -1)
+	if(simul->champVitesses((m_position+m_vitesse).getX(), (m_position+m_vitesse).getY()) == -1)
 		return ;
 
 	indiv_alentours = simul->alentours(1, m_position.getX(), m_position.getY());
@@ -105,21 +105,21 @@ void Individu::calculVitesse(Simulation<40>* simul)
 	}
 }
 
-bool Individu::move()
+bool Individu::move(std::vector<std::vector<int>>* champ_vitesses)
 {
 	if(m_pylone)
 		return false;
 
-	int xp = m_position.entier().getX();
-	int yp = m_position.entier().getY();
-	if(Champ_de_vitesses.at(xp).at(yp) == -1)
+	int xp = getX();
+	int yp = getY();
+	if(champ_vitesses->at(xp).at(yp) == -1)
 		return true;
 
 	m_position += m_vitesse;
-	xp = m_position.entier().getX();
-	yp = m_position.entier().getY();
+	xp = getX();
+	yp = getY();
 
-	if(Champ_de_vitesses.at(xp).at(yp) == -1)
+	if(champ_vitesses->at(xp).at(yp) == -1)
 	{
 		m_position -= m_vitesse;
 		return true;
@@ -136,7 +136,10 @@ void Individu::display(sf::RenderWindow &window)
 	{
 		cercle.setFillColor(sf::Color(0,0,0));
 	} else {
-		cercle.setFillColor(sf::Color(250,10,20));
+		// cercle.setFillColor(sf::Color(250,10,20));
+		double a = m_vitesse.norme();
+		unsigned int r = a < 0.1 ? 250 : 150;
+		cercle.setFillColor(sf::Color(r,10,20));
 	}
 	cercle.setPosition(10*(m_position.getX()-m_rayon), 10*(m_position.getY()-m_rayon));
 	cercle.setOutlineThickness(1);
@@ -193,8 +196,6 @@ int recherche(std::vector<Individu*>* L, Individu* element)
 	unsigned int i = 0;
 	// while (i < L->size() && L->at(i) != element)
 	while (L->at(i) != element)
-	{
 		i++;
-	}
 	return i;
 }

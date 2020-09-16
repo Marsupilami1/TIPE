@@ -17,7 +17,7 @@ class Individu
 	
 		void afficher();
 		void calculVitesse(Simulation<40>* simul);
-		bool move();
+		bool move(std::vector<std::vector<int>>* champ_vitesses);
 		void display(sf::RenderWindow &window);
 		bool touch(Individu* indiv) const;
 		bool repulsion(Individu* indiv) const;

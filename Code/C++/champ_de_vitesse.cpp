@@ -1,91 +1,91 @@
 #include "champ_de_vitesse.hpp"
 #include <iostream>
 
-std::vector<std::vector<int>> Champ_de_vitesses;
-std::vector<Vect> Distances_sorties;
-
-void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect> &vois, int d)
+void voisins(std::vector<std::vector<int>> &carte, std::vector<Vect>* vois, int d)
 {
-	unsigned int run = vois.size();
+	unsigned int run = vois->size();
 	for(unsigned int i=0; i<run; i++)
 	{
-		Vect obj = vois.at(i);
+		Vect obj = vois->at(i);
 		int X = obj.getX();
 		int Y = obj.getY();
 		
 		try{ // 1
 			if(carte.at(X+1).at(Y) == 0){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X+1, Y});
+				vois->push_back({X+1, Y});
 				carte[X+1][Y] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 2
 			if(carte.at(X-1).at(Y) == 0){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X-1, Y});
+				vois->push_back({X-1, Y});
 				carte[X-1][Y] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 3
 			if(carte.at(X).at(Y+1) == 0){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X, Y+1});
+				vois->push_back({X, Y+1});
 				carte[X][Y+1] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 4
 			if(carte.at(X).at(Y-1) == 0){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X, Y-1});
+				vois->push_back({X, Y-1});
 				carte[X][Y-1] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 5
 			if(carte.at(X+1).at(Y+1) == 0 && carte.at(X+1).at(Y) <= d && carte.at(X).at(Y+1) <= d){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X+1, Y+1});
+				vois->push_back({X+1, Y+1});
 				carte[X+1][Y+1] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 6
 			if(carte.at(X-1).at(Y-1) == 0 && carte.at(X-1).at(Y) <= d && carte.at(X).at(Y-1) <= d){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X-1, Y-1});
+				vois->push_back({X-1, Y-1});
 				carte[X-1][Y-1] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 7
 			if(carte.at(X-1).at(Y+1) == 0 && carte.at(X-1).at(Y) <= d && carte.at(X).at(Y+1) <= d){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X-1, Y+1});
+				vois->push_back({X-1, Y+1});
 				carte[X-1][Y+1] = d;}}
 		catch(const std::out_of_range& e){}
 		
 		try{ // 8
 			if(carte.at(X+1).at(Y-1) == 0 && carte.at(X+1).at(Y) <= d && carte.at(X).at(Y-1) <= d){
 				//~ Vect tt(X+1,Y);
-				vois.push_back({X+1, Y-1});
+				vois->push_back({X+1, Y-1});
 				carte[X+1][Y-1] = d;}}
 		catch(const std::out_of_range& e){}
 	}
 }
 
-std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<Vect> sorties, const std::vector<Vect> murs)
+std::vector<std::vector<int>> distances(const unsigned int n,		\
+									  const std::vector<Vect> sorties,	\
+									  const std::vector<Vect> murs,		\
+									  std::vector<Vect>* distances_sorties)
 {
 	std::vector<std::vector<int>> carte(n, std::vector<int>(n,0));
-	std::vector<Vect> vois(0);
+	*distances_sorties = std::vector<Vect>(0);
 	for(unsigned int i=0; i<sorties.size(); i++)
 	{
 		carte.at(sorties.at(i).getX()).at(sorties.at(i).getY()) = -1;
-		vois.push_back(sorties.at(i));
+		distances_sorties->push_back(sorties.at(i));
 	}
 	for(unsigned int i=0; i<murs.size(); i++)
 		carte.at(murs.at(i).getX()).at(murs.at(i).getY()) = 3*n+10;
 	
 	for(unsigned int k=0; k<=3*n; k++)
 	{
-		voisins(carte, vois, k+1);
+		voisins(carte, distances_sorties, k+1);
 	}
 	
 	/*
@@ -107,9 +107,7 @@ std::vector<std::vector<int>> distances(const unsigned int n, const std::vector<
 	
 	for(unsigned int i=0; i<sorties.size(); i++)
 		carte.at(sorties.at(i).getX()).at(sorties.at(i).getY()) = 0;
-	
-	Distances_sorties = vois;
-	
+
 	return carte;
 }
 
@@ -216,7 +214,9 @@ std::vector<std::vector<int>> vitesses(std::vector<std::vector<int>> distances)
 }
 
 
-void calculs_champs(const unsigned int n, const std::vector<Vect> sorties, const std::vector<Vect> murs)
+void calculs_champs(const unsigned int n, const std::vector<Vect> sorties, \
+					const std::vector<Vect> murs, std::vector<Vect>* distances_sorties, \
+					std::vector<std::vector<int>>* champ_vitesses)
 {
-	Champ_de_vitesses = vitesses(distances(n, sorties, murs));
+	*champ_vitesses = vitesses(distances(n, sorties, murs, distances_sorties));
 }
