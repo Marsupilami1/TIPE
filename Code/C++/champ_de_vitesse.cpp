@@ -81,9 +81,9 @@ std::vector<std::vector<int>> distances(const unsigned int n,		\
 		distances_sorties->push_back(sorties.at(i));
 	}
 	for(unsigned int i=0; i<murs.size(); i++)
-		carte.at(murs.at(i).getX()).at(murs.at(i).getY()) = 3*n+10;
+		carte.at(murs.at(i).getX()).at(murs.at(i).getY()) = n*n+10;
 	
-	for(unsigned int k=0; k<=3*n; k++)
+	for(unsigned int k=0; k<=n*n; k++)
 	{
 		voisins(carte, distances_sorties, k+1);
 	}

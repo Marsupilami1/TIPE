@@ -7,7 +7,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-const unsigned int TAILLE_GRILLE = 40;
 template <unsigned int TAILLE_GRILLE>
 class Simulation;
 class Individu
@@ -16,7 +15,7 @@ class Individu
 		Individu(double pos_x, double pos_y, double rayon, double rayon_repulsion, double rayon_CdV, bool is_pylone);
 	
 		void afficher();
-		void calculVitesse(Simulation<40>* simul);
+		void calculVitesse(std::vector<std::vector<int>>* champ_vitesses, std::vector<Individu*>** indiv_liste);
 		bool move(std::vector<std::vector<int>>* champ_vitesses);
 		void display(sf::RenderWindow &window);
 		bool touch(Individu* indiv) const;
@@ -39,5 +38,7 @@ class Individu
 };
 
 int recherche(std::vector<Individu*>* L, Individu* element);
+std::vector<Individu*> alentours(unsigned int t, std::vector<Individu*>** liste_indiv, \
+				 int l, unsigned int x, unsigned int y);
 
 #endif

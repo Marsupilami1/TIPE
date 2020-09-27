@@ -25,9 +25,10 @@ void Individu::afficher()
 	std::cout << "Position : " << m_position;
 }
 
-void Individu::calculVitesse(Simulation<40>* simul)
+void Individu::calculVitesse(std::vector<std::vector<int>>* champ_vitesses, std::vector<Individu*>** liste_indiv)
 {
 	unsigned int run = 0;
+	const unsigned int TAILLE_GRILLE = champ_vitesses->size();
 	std::vector<Vect> liste_vitesse = {{1,0},{1,-1},{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1}};
 	std::vector<Individu*> indiv_alentours(0);
 
@@ -37,18 +38,18 @@ void Individu::calculVitesse(Simulation<40>* simul)
 	// Vitesse du champs de vitesses
 	int x = m_position.getX();
 	int y = m_position.getY();
-	int v_chemin = simul->champVitesses(x, y);
+	int v_chemin = champ_vitesses->at(x).at(y);
 	Vect vit = {0,0};
 	if(v_chemin > -1)
 		vit = liste_vitesse[v_chemin];
 	m_vitesse = alpha*vit.normalise();
 	m_vitesse.rotate(distribution(generator));
-	if(simul->champVitesses((m_position+m_vitesse).getX(), (m_position+m_vitesse).getY()) == -1)
+	if(champ_vitesses->at((m_position+m_vitesse).getX()).at((m_position+m_vitesse).getY()) == -1)
 		return ;
 
 	// Si repulsion
 	// indiv_alentours = alentours(m_rayon_repulsion+1);
-	indiv_alentours = simul->alentours(m_rayon_repulsion+1, x, y);
+	indiv_alentours = alentours(TAILLE_GRILLE-1, liste_indiv, m_rayon_repulsion+1, x, y);
 	run = indiv_alentours.size();
 	unsigned int right = 0;
 	unsigned int left = 0;
@@ -72,28 +73,29 @@ void Individu::calculVitesse(Simulation<40>* simul)
 	if(getY()+m_rayon >= TAILLE_GRILLE)
 	{
 		m_position = {getX()+(TAILLE_GRILLE-getY()-m_rayon)*m_vitesse.getX()/(m_vitesse.getY()),TAILLE_GRILLE-m_rayon};
-		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+		m_vitesse = alpha*(liste_vitesse[champ_vitesses->at(getX()).at(getY())].normalise());
 	} else if(getY() < m_rayon)
 	{
 		m_position = {getX()+(m_rayon-getY())*m_vitesse.getX()/(m_vitesse.getY()),m_rayon};
-		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+		m_vitesse = alpha*(liste_vitesse[champ_vitesses->at(getX()).at(getY())].normalise());
+
 	} else if(getX()+m_rayon >= TAILLE_GRILLE)
 	{
 		m_position = {TAILLE_GRILLE-m_rayon,getY()+(TAILLE_GRILLE-getX()-m_rayon)*m_vitesse.getY()/(m_vitesse.getX())};
-		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+		m_vitesse = alpha*(liste_vitesse[champ_vitesses->at(getX()).at(getY())].normalise());
 	} else if(getX() < m_rayon)
 	{
 		m_position = {m_rayon,getY()+(m_rayon-getX())*m_vitesse.getY()/(m_vitesse.getX())};
-		m_vitesse = alpha*(liste_vitesse[simul->champVitesses(getX(), getY())].normalise());
+		m_vitesse = alpha*(liste_vitesse[champ_vitesses->at(getX()).at(getY())].normalise());
 	} else
 	{
 		m_position -= m_vitesse;
 	}
 
-	if(simul->champVitesses((m_position+m_vitesse).getX(), (m_position+m_vitesse).getY()) == -1)
+	if(champ_vitesses->at((m_position+m_vitesse).getX()).at((m_position+m_vitesse).getY()) == -1)
 		return ;
 
-	indiv_alentours = simul->alentours(1, m_position.getX(), m_position.getY());
+	indiv_alentours = alentours(TAILLE_GRILLE-1, liste_indiv, 1, m_position.getX(), m_position.getY());
 	run = indiv_alentours.size();
 	for(unsigned int i=0; i<run; i++)
 	{
@@ -198,4 +200,24 @@ int recherche(std::vector<Individu*>* L, Individu* element)
 	while (L->at(i) != element)
 		i++;
 	return i;
+}
+
+std::vector<Individu*> alentours(unsigned int t, std::vector<Individu*>** liste_indiv, \
+				 int l, unsigned int x, unsigned int y)
+{
+	l= l<1 ? 1 : l;
+	unsigned int gauche = x-l;
+	unsigned int droite = x+l;
+	unsigned int bas = y-l;
+	unsigned int haut = y+l;
+	std::vector<Individu*> lindiv(0);
+	for(unsigned int i=(gauche<0?0:gauche); i<=(droite>t?t:droite); i++)
+	{
+		for(unsigned int j=(bas<0?0:bas); j<=(haut>t?t:haut); j++)
+		{
+			lindiv.insert(lindiv.end(),(*(liste_indiv+((t+1)*i+j)))->begin(),\
+			(*(liste_indiv+((t+1)*i+j)))->end());
+		}
+	}
+	return lindiv;
 }

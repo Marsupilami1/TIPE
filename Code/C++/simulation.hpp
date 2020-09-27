@@ -23,7 +23,6 @@ class Simulation
 		void addNIndiv(unsigned int n);
 		void run();
 		std::vector<Individu*>* getVecteursCase(int x, int y) const;
-		std::vector<Individu*> alentours(int l, unsigned int x, unsigned int y);
 		int champVitesses(const unsigned int l, const unsigned int c) const;
 
 	private :
@@ -50,7 +49,7 @@ Simulation<TAILLE_GRILLE>::Simulation() :								\
 
 	m_distances_sorties = new std::vector<Vect>;
 
-	m_fenetre.setFramerateLimit(45);
+	// m_fenetre.setFramerateLimit(45);
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
 	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
@@ -228,12 +227,14 @@ void Simulation<TAILLE_GRILLE>::run()
 				for(int k=iter; k>-1; k--)
 				{
 					ptr_indiv = sous_liste->at(k);
-					ptr_indiv->calculVitesse(this);
+					ptr_indiv->calculVitesse(m_champ_vitesses, &(m_liste[0][0]));
+
 					int x = ptr_indiv->getX();
 					int y = ptr_indiv->getY();
 					escape = ptr_indiv->move(m_champ_vitesses);
 					int xp = ptr_indiv->getX();
 					int yp = ptr_indiv->getY();
+
 					if (x != xp || y != yp)
 					{
 						m_liste[x][y]->erase(m_liste[x][y]->begin()+recherche(m_liste[x][y],ptr_indiv));
@@ -293,26 +294,6 @@ template<unsigned int TAILLE_GRILLE>
 std::vector<Individu*>* Simulation<TAILLE_GRILLE>::getVecteursCase(int x, int y) const
 {
 	return m_liste[x][y];
-}
-
-template<unsigned int TAILLE_GRILLE>
-std::vector<Individu*> Simulation<TAILLE_GRILLE>::alentours(int l, unsigned int x, unsigned int y)
-{
-	l= l<1 ? 1 : l;
-	unsigned int gauche = x-l;
-	unsigned int droite = x+l;
-	unsigned int bas = y-l;
-	unsigned int haut = y+l;
-	unsigned int t = TAILLE_GRILLE-1;
-	std::vector<Individu*> lindiv(0);
-	for(unsigned int i=(gauche<0?0:gauche); i<=(droite>t?t:droite); i++)
-	{
-		for(unsigned int j=(bas<0?0:bas); j<=(haut>t?t:haut); j++)
-		{
-			lindiv.insert(lindiv.end(),m_liste[i][j]->begin(),m_liste[i][j]->end());
-		}
-	}
-	return lindiv;
 }
 
 template<unsigned int TAILLE_GRILLE>

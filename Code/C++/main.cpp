@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	srand(time(NULL));
 	const unsigned int TAILLE_GRILLE = 40;
-	Simulation<TAILLE_GRILLE > simul;
+	Simulation<TAILLE_GRILLE> simul;
 
 	for(unsigned int i=0; i<TAILLE_GRILLE-1; i++)
 	{
@@ -18,8 +18,8 @@ int main(int argc, char* argv[])
 		simul.addPylone(TAILLE_GRILLE-1-i,0);
 	}
 	// simul.addNIndiv(800);
-	// simul.addSortie(20, 39);
-	// simul.addSortie(19, 39);
+	simul.addSortie(20, 39);
+	simul.addSortie(19, 39);
 
 	simul.run();
 
