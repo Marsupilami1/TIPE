@@ -9,18 +9,18 @@ class Vect
 	public :
 		Vect(double x = 0.0, double y = 0.0); // Constructeur
 		Vect(int x, int y);
+		Vect(unsigned int x, unsigned int y);
 		Vect(Vect const& v); // Constructeur
 		
 		double getX() const;
 		double getY() const;
-		
 		void afficher() const;
 		void rotate(double theta);
 		double norme() const;
 		Vect entier();
-		
 		bool egal(Vect const& v) const;
 		Vect oppose() const;
+		
 		double scalaire(Vect const& v) const;
 		double vectoriel(Vect const& v) const;
 		Vect& operator+=(Vect const& v);

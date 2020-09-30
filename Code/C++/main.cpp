@@ -1,22 +1,31 @@
-#include "individu.hpp"
 #include "simulation.hpp"
+#include "individu.hpp"
 #include <ctime>
 
-extern const unsigned int TAILLE_GRILLE; // Défini dans individu.h
+// extern const unsigned int T; // Défini dans individu.h
 
 int main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	Simulation simul(TAILLE_GRILLE);
-	for(double i=0.5; i<TAILLE_GRILLE; i+=1)
+
+	const unsigned int T = 50;
+	Simulation<T> simul;
+
+	for(unsigned int i=0; i<T-1; i++)
 	{
-		simul.addPylone(0.5,i);
-		simul.addPylone(TAILLE_GRILLE-0.5,i);
-		simul.addPylone(i,TAILLE_GRILLE-0.5);
-		simul.addPylone(i,0.5);
+		simul.addPylone(0,i);
+		simul.addPylone(T-1,T-1-i);
+		simul.addPylone(i,T-1);
+		simul.addPylone(T-1-i,0);
+
+		simul.addPylone(1,i);
+		simul.addPylone(T-2,T-2-i);
+		simul.addPylone(i,T-2);
+		simul.addPylone(T-2-i,1);
 	}
-	simul.addNIndiv(800);
-	simul.addSortie(0, 20);
+	// simul.addNIndiv(800);
+	// simul.addSortie(T/2, T-1);
+	// simul.addSortie(T/2 -1, T-1);
 
 	simul.run();
 

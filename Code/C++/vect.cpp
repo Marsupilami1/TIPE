@@ -4,14 +4,17 @@ Vect::Vect(double x, double y) : m_x(x), m_y(y)
 {	
 }
 
-Vect::Vect(int x, int y) :m_x((double) x), m_y((double) y)
+Vect::Vect(int x, int y) : m_x(double(x)), m_y(double(y))
+{
+}
+
+Vect::Vect(unsigned int x, unsigned int y) : m_x(double(x)), m_y(double(y))
 {
 }
 
 Vect::Vect(Vect const& v) : m_x(v.m_x), m_y(v.m_y)
 {
 }
-
 
 double Vect::getX() const
 {
