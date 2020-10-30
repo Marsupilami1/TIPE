@@ -1,6 +1,6 @@
-Titre : Modélisation des foules lors d'évacuations
-
 Thème : Enjeux Sociétaux
+
+Titre : Modélisation des foules lors d'évacuations
 
 Positionnement thématique : Informatique (modélisation) / Physique
 
