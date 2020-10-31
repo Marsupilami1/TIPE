@@ -12,67 +12,48 @@ Mots-clés | Key-words :
     Évacuation|Evacuation.
 
 Bibliographie commentée :
- !!! A FAIRE !!!!
-    Crowds
-    Howard J. Hamilton
-        http://www2.cs.uregina.ca/~anima/408/Notes/Crowds/Crowds.htm
-    
-    Flocks, Herds, and Schools: A Distributed Behavioral Model 1
-    Craig W. Reynolds
-        Symbolics Graphics Division
-        Disponible ici : https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf
-        Parle de simulation de "troupeux" d'oiseaux (boids) avec une approche particulaire,
-        aborde l'utilité de ces simulations ainsi que la complexité de ces algorithmes en fonction du nombre d'oiseaux.
 
-    Simulation crédible des déplacements de piétons en temps réel : modèle microscopique à influence macroscopique
-    Patrick Simo Kanmeugne (thèse)
-            Disponible ici : https://tel.archives-ouvertes.fr/tel-01066477/document
-            Aborde la modélisation de mouvements piétons (chapitre 3) et les différents paramétrages / différentes évaluations faites avec (chapitre 5)
+    Les premières simulations de déplacement, sur des groupes d'oiseaux [1], n'avaient pas de but précis, si ce n'est l'étude du mouvement et la reproduction de celui-ci.
+    L'étude de foules humaine quant à elle permet de mieux les comprendre et d'anticiper des mouvements collectifs.
+    L'exemple le plus frappant est celui de la simulation de piétons, massivement utilisées dans le cinéma et le jeu vidéo. La mise au point de simulations réalistes nécessite l'établissement de "règles de déplacement" pouvant être calculées. Ces règles sont obtenues par l'expérience. On peut par exemple étudier l'évolution d'un trafic piétonnier autour d'un cylindre. La solidité des différents modèles passes par l'observation de propriétés dynamiques et phénomènes d'agrégations. [2][3]
 
-    A Hybrid macro-micro pedestrians evacuation model to speed up simulation in road networks
-    Ngoc-Anh T. Nguyen, Jean-Daniel Zucker, Huu-Du Nguyen, Alexis Drogoul,Duc An Vo
-        Disponible ici : https://hal.archives-ouvertes.fr/hal-00736474/document
-        Modélise les mouvements de foules liés à des urgences.
+    Ces modèles considèrent des individus singuliers, dont chacun se comporte individuellement, suivant un champs de vision et des règles qui lui sont données. Ils sont alors traités les uns après les autres. Lorsque la densité des individus devient trop importante, l'environnement devient homogène, analogue à un fluide. Un modèle macroscopique, dans lequel on ne considère que les entités simulés sont des groupes d'individus voir le groupe tout entier. Ce modèle devient alors très efficace. [4]
 
-    Simulation du comportement de suivi dans une foule de piétons à travers l’expérience, l’analyse et la modélisation
-    Samuel Lemercier (thèse)
-        Disponible ici : https://tel.archives-ouvertes.fr/tel-00724072/file/LEMERCIER_Samuel.pdf
-        Comparaison expérience / modélisartion : démarche similaire à la notre
-
-    Crowd Simulation Modeling Applied to Emergency and Evacuation Simulations using Multi-Agent Systems
-    Joao E.Almeida, Rosaldo Rosseti, Antonio Leca Coelho
-        Disponible ici : https://arxiv.org/ftp/arxiv/papers/1303/1303.4692.pdf
-        Description de mouvements de foules soumis à un cas d'urgence
+    Ces différentes simulations jouent un rôle dans la sécurité des indivudus en contexte d'évacuation. Elles permettent des de faire de bonnes modifications de l'environnement, de l'architecture et de prescrire le bon comportement à adopter. [5]
+    Les évacuations amènent d'autres problématiques. La présence d'une sortie, d'un objectif ponctuel et commun, implique l'existence d'un champ de vitesse. Il peut se calculer à l'aide d'un gradient, ou en adoucissant un premier champ grossier. [6]
 
 
 Problématique retenue :
-    Comment réagissent les foules dans un contexte d'évacutation ?
-    (et alors pourquoi faire un modèle et les experiences valident ou invalident le modèle qui permet d'étudier les foules)
-    Ou
     Il s'agit de construire et d'étudier un modèle de simulation d'évacuations de foules.
-    Le comportement de la simulation programmé en C++ sera déduit d'expériences sur des mileux granulaires et des fluides.
+    Les règles de la simulation, programmé en C++, seront déduites d'expériences.
     En étudiant deux situations distinctes, nous verrons comment assurer une évacuation plus rapide et moins dangereuse.
 
 Objectifs :
-    1) Présentation des difficulté de faire des expériences à taille humaine -> intêret de la simu + exp. billes
-        - objectif : réaliser une simulation numérique et un expérience sur un milieu granulaire (expérience révélatrice ? si marche pas -> la simu est nécessaire)
-    2) Optimiser les temps de sortie 
-        - Etude de différents cas :
-                    •avec, sans pylones, où placer les pylones, combien ? 
-                    •faire des couloirs, étranglements ?
-    3) Etude asymptotique des mouvements de foule (nombre d'individus)
-        - Etudier l'influence du nombre de personne sur le temps de sortie (en fonction de différents paramètres : densité, sorties...)
-    4) Comportement locaux récurrent chez les individus (agglutinements, comment ils rentrent dans le couloir, contournent les pylones...) 
-    5) Performances computationnelles : Etude et comparaison de la complexité de l'algorithme 
+    Andrieux Martin
+    
+    
+    Maillet Nathan
+    
+    
+    1) La difficulté de faire des expériences à taille humaine justifie l'intêret de la simulation et des expériences avec des billes
+        - Réaliser une simulation numérique et une expérience sur un milieu granulaire (billes)
+    2) Chercher à optimiser les temps de sortie
+        - Etude de différents cas : 
+            • Influence des pylones, où placer les pylones et combien ?
+            • Influence des couloirs et étranglements.
+    3) Etude asymptotique des mouvements de foule en fonction du nombre d'individus
+        - Etudier l'influence du nombre de personne sur le temps de sortie (en fonction de différents paramètres : densité, nombre et taille des sorties...)
+    4) Observation de comportements locaux récurrent chez les individus (agglutinements, entrée dans un couloir, contournement des pylones...) 
+    5) Etude des performances du programme et comparaison entre les complexités des programmes actuels et le notre.
 
 Références bibliographiques:
-    [1] Howard J. Hamilton, University of Regina : Modélisation d'un champs de flux pour les foules, http://www2.cs.uregina.ca/~anima/408/Notes/Crowds/Crowds.htm (dernière consultation le 30 Octobre 2020)
-    [2] Patrick Simo Kanmeugne : Thèse : Simulation crédible des déplacements de piétons en temps réel : modèle microscopique à influence macroscopique, Avril 2015
-    [3] Ngoc-Anh T. Nguyen, Jean-Daniel Zucker, Huu-Du Nguyen, Alexis Drogoul,Duc An Vo :  A Hybrid macro-micro pedestrians evacuation model to speed up simulation in road networks, https://hal.archives-ouvertes.fr/hal-00736474/document (dernière consultation le 30 Octobre 2020)
-    [4] Craig W. Reynolds : Flocks, Herds, and Schools: A Distributed Behavioral Model 1, https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf (dernière consultation le 30 Octobre 2020)
-    [5] Samuel Lemercier : Thèse : Simulation du comportement de suivi dans une foule de piétons à travers l’expérience, l’analyse et la modélisation, Août 2012
-    [6] Joao E.Almeida, Rosaldo Rosseti, Antonio Leca Coelho : Crowd Simulation Modeling Applied to Emergency and Evacuation Simulations using Multi-Agent Systems, https://arxiv.org/ftp/arxiv/papers/1303/1303.4692.pdf (dernière consultation le 30 Octobre 2020)
-
+    [1] Craig W. Reynolds : Flocks, Herds, and Schools: A Distributed Behavioral Model 1, https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf (dernière consultation le 30 Octobre 2020)
+    [2] Samuel Lemercier : Thèse : Simulation du comportement de suivi dans une foule de piétons à travers l’expérience, l’analyse et la modélisation, Août 2012
+    [3] Patrick Simo Kanmeugne : Thèse : Simulation crédible des déplacements de piétons en temps réel : modèle microscopique à influence macroscopique, Avril 2015
+    [4] Ngoc-Anh T. Nguyen, Jean-Daniel Zucker, Huu-Du Nguyen, Alexis Drogoul,Duc An Vo :  A Hybrid macro-micro pedestrians evacuation model to speed up simulation in road networks, https://hal.archives-ouvertes.fr/hal-00736474/document (dernière consultation le 30 Octobre 2020)
+    [5] Joao E.Almeida, Rosaldo Rosseti, Antonio Leca Coelho : Crowd Simulation Modeling Applied to Emergency and Evacuation Simulations using Multi-Agent Systems, https://arxiv.org/ftp/arxiv/papers/1303/1303.4692.pdf (dernière consultation le 30 Octobre 2020)
+    [6] Howard J. Hamilton, University of Regina : Modélisation d'un champs de flux pour les foules, http://www2.cs.uregina.ca/~anima/408/Notes/Crowds/Crowds.htm (dernière consultation le 30 Octobre 2020)
+    
 Ancrage : 
     Les mouvements de foules ne sont pas toujours maitrisables. Ils peuvent blesser certaines personnes, voire les tuer.
     Au vue de la difficulté de réaliser régulièrement des expériences a grandes échelles,
