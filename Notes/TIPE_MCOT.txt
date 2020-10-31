@@ -7,7 +7,7 @@ Positionnement thématique : Informatique (modélisation) / Physique
 Mots-clés | Key-words :
     Mouvements de foules|Crowd movement
     Simulation numérique|Digital simulation
-    Modèle|model
+    Modèle|Model
     Analogie physique|Physical analogy
     Évacuation|Evacuation.
 
