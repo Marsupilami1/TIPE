@@ -85,7 +85,7 @@ void Simulation<TAILLE_GRILLE>::addPylone(unsigned int x, unsigned int y)
 			for(int k=0; k<iter; k++)
 			{
 				ind_lambda = sous_liste->at(k);
-				if((ind_lambda->getPos()-Vect(x,y)).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
+				if((ind_lambda->getPos()-Vect(x+0.5,y+0.5)).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
 				{
 					ok = false;
 					break;
@@ -132,6 +132,7 @@ void Simulation<TAILLE_GRILLE>::addIndiv(double x, double y)
 	if(ok)
 	{
 		Individu* ptr_indiv = new Individu(x, y, r, 7*r, 14*r, false);
+		// Individu* ptr_indiv = new Individu(x, y, r, 7*r, 14*r, false);
 		m_liste[int(x)][int(y)]->push_back(ptr_indiv);
 		m_compteur++;
 	}

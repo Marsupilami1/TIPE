@@ -25,14 +25,15 @@ void Individu::afficher()
 	std::cout << "Position : " << m_position;
 }
 
-void Individu::calculVitesse(std::vector<std::vector<Vect>>* champ_vitesses, std::vector<Individu*>** liste_indiv)
+void Individu::calculVitesse(std::vector<std::vector<Vect>>* champ_vitesses, \
+							 std::vector<Individu*>** liste_indiv)
 {
 	unsigned int run = 0;
 	const unsigned int TAILLE_GRILLE = champ_vitesses->size();
 	std::vector<Individu*> indiv_alentours(0);
 
 	// Constantes
-	double alpha = 0.2;
+	double alpha = 0.3;
 
 	// Vitesse du champs de vitesses
 	int x = m_position.getX();
@@ -60,11 +61,12 @@ void Individu::calculVitesse(std::vector<std::vector<Vect>>* champ_vitesses, std
 		}
 	}
 	if(left+right != 0 && left != right)
+	{
 		m_vitesse.rotate(left<right ? PI/3.5 : -PI/3.5);
+	}
 
 	// Si sortie de zone
-	// Si un individu est déplacé mais qu'il change de case dans l'opération,
-	// alors il ne sera pas détruit s'il le faut
+	/*
 	m_position += m_vitesse;
 	if(getY()+m_rayon >= TAILLE_GRILLE)
 	{
@@ -87,10 +89,10 @@ void Individu::calculVitesse(std::vector<std::vector<Vect>>* champ_vitesses, std
 	{
 		m_position -= m_vitesse;
 	}
-
+	*/
 	if(champ_vitesses->at((m_position+m_vitesse).getX()).at((m_position+m_vitesse).getY()) == Vect(0,0))
 		return ;
-
+	
 	indiv_alentours = alentours(TAILLE_GRILLE-1, liste_indiv, 1, m_position.getX(), m_position.getY());
 	run = indiv_alentours.size();
 	for(unsigned int i=0; i<run; i++)
