@@ -3,14 +3,14 @@ Thème : Enjeux Sociétaux
 Titre : Modélisation des foules lors d'évacuations.
 
 Ancrage : 
-    Les mouvements de foules ne sont pas toujours maitrisables. Ils peuvent blesser certaines personnes, voire les tuer.
-    Au vue de la difficulté de réaliser régulièrement des expériences a grandes échelles,
+    Les mouvements de foule ne sont pas toujours maitrisables. Ils peuvent blesser certaines personnes, voire les tuer.
+    Au vue de la difficulté de réaliser régulièrement des expériences a grande échelle,
     la nécessité d'une modélisation numérique s'inscrit dans la création d'une société plus sûre.
     -> 46 mots 
     
 Motivation du choix de l'étude :
-    La perspective d'un TIPE comprenant une importante part d'informatique m'interresse grandement.
-    Je trouve que l'étude d'un sujet concret et moderne comme les foules est particulièrement motivant et
+    La perspective d'un TIPE comprenant une importante part d'informatique m'intéresse grandement.
+    Je trouve que l'étude d'un sujet concret et moderne comme les foules est particulièrement motivante et
     que les acquis informatiques que peuvent m'apporter ce TIPE sont complémentaires au programme.
     -> 40 mots
     
@@ -25,16 +25,16 @@ Mots-clés | Key-words :
 
 Bibliographie commentée :
       Les premières simulations de déplacement, sur des groupes d'oiseaux [1], n'avaient pas de but précis, si ce n'est l'étude du mouvement et la reproduction de celui-ci.
-    L'étude de foules humaine quant à elle permet de mieux les comprendre et d'anticiper des mouvements collectifs.
-    L'exemple le plus frappant est celui de la simulation de piétons, massivement utilisées dans le cinéma et le jeu vidéo. La mise au point de simulations réalistes nécessite
+    L'étude de foules humaines quant à elle permet de mieux les comprendre et d'anticiper des mouvements collectifs.
+    L'exemple le plus frappant est celui de la simulation de piétons, massivement utilisée dans le cinéma et le jeu vidéo. La mise au point de simulations réalistes nécessite
     l'établissement de "règles de déplacement" pouvant être calculées. Ces règles sont obtenues par l'expérience. On peut par exemple étudier l'évolution d'un trafic piétonnier
-    autour d'un cylindre. La solidité des différents modèles passes par l'observation de propriétés dynamiques et phénomènes d'agrégations. [2][3]
-      Ces modèles considèrent des individus singuliers, dont chacun se comporte individuellement, suivant un champs de vision et des règles qui lui sont données. Ils sont alors
+    autour d'un cylindre. La solidité des différents modèles passes par l'observation de propriétés dynamiques et phénomènes d'agrégation. [2][3]
+      Ces modèles considèrent des individus singuliers, dont chacun se comporte individuellement, suivant un champ de vision et des règles qui lui sont données. Ils sont alors
     traités les uns après les autres. Lorsque la densité des individus devient trop importante, l'environnement devient homogène, analogue à un fluide. Un modèle macroscopique,
-    dans lequel on ne considère que les entités simulés sont des groupes d'individus voir le groupe tout entier. Ce modèle devient alors très efficace. [4]
-      Ces différentes simulations jouent un rôle dans la sécurité des indivudus en contexte d'évacuation. Elles permettent des de faire de bonnes modifications de l'environnement,
+    dans lequel on ne considère que les entités simulées sont des groupes d'individus voir le groupe tout entier. Ce modèle devient alors très efficace. [4]
+      Ces différentes simulations jouent un rôle dans la sécurité des individus en contexte d'évacuation. Elles permettent de faire de bonnes modifications de l'environnement,
     de l'architecture et de prescrire le bon comportement à adopter. [5]
-    Les évacuations amènent d'autres problématiques. La présence d'une sortie, d'un objectif ponctuel et commun, implique l'existence d'un champ de vitesse. Il peut se calculer
+    Les évacuations amènent d'autres problématiques. La présence d'une sortie, d'un objectif ponctuel et commun, implique l'existence d'un champ de vitesses. Il peut se calculer
     à l'aide d'un gradient, ou en adoucissant un premier champ grossier. [6]
 
 
@@ -48,20 +48,20 @@ Objectifs :
     Nathan Maillet : [1, 2, 3]
     Andrieux Martin : [1, 4, 5]
     
-    1) La difficulté de faire des expériences à taille humaine justifie l'intêret de la simulation et des expériences avec des billes
+    1) La difficulté de faire des expériences à taille humaine justifie l'intêrêt de la simulation et des expériences avec des billes
         - Réaliser une simulation numérique et une expérience sur un milieu granulaire (billes)
     2) Chercher à optimiser les temps de sortie
-        - Influence des pylones, où placer les pylones et combien ?
-    3) Etude asymptotique des mouvements de foule en fonction du nombre d'individus
-        - Etudier l'influence du nombre de personne sur le temps de sortie (en fonction de différents paramètres : densité, nombre et taille des sorties...)
+        - Influence des pylônes, où placer les pylônes et combien ?
+    3) Étude asymptotique des mouvements de foule en fonction du nombre d'individus
+        - Étudier l'influence du nombre de personnes sur le temps de sortie (en fonction de différents paramètres : densité, nombre et taille des sorties...)
     4) Observation de comportements locaux récurrents chez les individus
         - Influence des couloirs et étranglements
         - Agglutinements
-        - Contournement des pylones
-        - Qualité du champs de vitesse, conséquences sur les comportements locaux
-    5) Etude des performances du programme:
-        - Comparaison entre les complexités des programmes actuels et le notre
-        - Performance du calcul du champ de vitesse
+        - Contournement des pylônes
+        - Qualité du champ de vitesse, conséquences sur les comportements locaux
+    5) Étude des performances du programme
+        - Comparaison entre les complexités des programmes actuels et le nôtre
+        - Performance du calcul du champ de vitesses
 
 Références bibliographiques:
     [1] Craig W. Reynolds : Flocks, Herds, and Schools: A Distributed Behavioral Model 1, https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf (dernière consultation le 30 Octobre 2020)
