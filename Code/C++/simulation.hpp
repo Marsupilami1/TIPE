@@ -23,7 +23,7 @@ class Simulation
 		void addNIndiv(unsigned int n);
 		void run();
 		std::vector<Individu*>* getVecteursCase(int x, int y) const;
-		int champVitesses(const unsigned int l, const unsigned int c) const;
+		Vect champVitesses(const unsigned int l, const unsigned int c) const;
 
 	private :
 		sf::RenderWindow m_fenetre;
@@ -31,7 +31,7 @@ class Simulation
 		std::vector<Vect> m_murs;
 		std::vector<Individu*>* m_liste[TAILLE_GRILLE][TAILLE_GRILLE];
 		std::vector<Vect>* m_distances_sorties;
-		std::vector<std::vector<int>>* m_champ_vitesses;
+		std::vector<std::vector<Vect>>* m_champ_vitesses;
 		int m_compteur;
 };
 
@@ -42,14 +42,14 @@ Simulation<TAILLE_GRILLE>::Simulation() :								\
 			  sf::Style::Close | sf::Style::Titlebar),					\
 	m_sorties(0), m_murs(0)
 {
-	m_champ_vitesses = new std::vector<std::vector<int>>(TAILLE_GRILLE);
+	m_champ_vitesses = new std::vector<std::vector<Vect>>(TAILLE_GRILLE);
 	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
-		(*m_champ_vitesses)[i] = std::vector<int>(TAILLE_GRILLE, 0);
+		(*m_champ_vitesses)[i] = std::vector<Vect>(TAILLE_GRILLE, 0);
 	}
 
 	m_distances_sorties = new std::vector<Vect>;
 
-	// m_fenetre.setFramerateLimit(45);
+	m_fenetre.setFramerateLimit(45);
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
 	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
@@ -85,7 +85,7 @@ void Simulation<TAILLE_GRILLE>::addPylone(unsigned int x, unsigned int y)
 			for(int k=0; k<iter; k++)
 			{
 				ind_lambda = sous_liste->at(k);
-				if((ind_lambda->getPos()-Vect(x,y)).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
+				if((ind_lambda->getPos()-Vect(x+0.5,y+0.5)).norme()<ind_lambda->getR()+r) // Si plus proches que leur rayon
 				{
 					ok = false;
 					break;
@@ -97,7 +97,7 @@ void Simulation<TAILLE_GRILLE>::addPylone(unsigned int x, unsigned int y)
 	if(ok)
 	{
 		m_murs.push_back(Vect(x,y));
-		Individu* ptr_indiv = new Individu(x+0.5,y+0.5,r,0,0, true);
+		Individu* ptr_indiv = new Individu(x+0.5,y+0.5,r,0, true);
 		m_liste[x][y]->push_back(ptr_indiv);
 	}
 }
@@ -131,7 +131,7 @@ void Simulation<TAILLE_GRILLE>::addIndiv(double x, double y)
 
 	if(ok)
 	{
-		Individu* ptr_indiv = new Individu(x, y, r, 7*r, 14*r, false);
+		Individu* ptr_indiv = new Individu(x, y, r, 7*r, false);
 		m_liste[int(x)][int(y)]->push_back(ptr_indiv);
 		m_compteur++;
 	}
@@ -166,8 +166,10 @@ void Simulation<TAILLE_GRILLE>::run()
 	}
 	m_fenetre.display();
 
-	while (m_fenetre.isOpen() && ((m_compteur > 0) || !(active)))
+	unsigned int nb_real = 1;
+	while (m_fenetre.isOpen() && ((nb_real > 2) || !(active)))
 	{
+		nb_real = 0;
 		sf::Event event; // Boucle d'événements
 		while (m_fenetre.pollEvent(event))
 		{
@@ -188,9 +190,14 @@ void Simulation<TAILLE_GRILLE>::run()
 					break;
 
 				case(sf::Event::MouseButtonPressed) :
-					if(event.mouseButton.button == sf::Mouse::Left)
-						addNIndiv(100);
-						// addIndiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
+					if(event.mouseButton.button == sf::Mouse::Left) {
+						if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+							addNIndiv(100);
+						else if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+							addNIndiv(1000);
+						else
+							addIndiv(event.mouseButton.x/10.0, event.mouseButton.y/10.0);
+					}
 					else if(event.mouseButton.button == sf::Mouse::Right)
 						addSortie(event.mouseButton.x/10, event.mouseButton.y/10);
 					else if(event.mouseButton.button == sf::Mouse::Middle)
@@ -224,6 +231,7 @@ void Simulation<TAILLE_GRILLE>::run()
 			{
 				sous_liste = getVecteursCase(m_distances_sorties->at(i).getX(),m_distances_sorties->at(i).getY());
 				iter = sous_liste->size()-1;
+				nb_real += iter+1;
 				for(int k=iter; k>-1; k--)
 				{
 					ptr_indiv = sous_liste->at(k);
@@ -247,7 +255,8 @@ void Simulation<TAILLE_GRILLE>::run()
 						m_compteur--;
 						delete ptr_indiv;
 					} else {
-						ptr_indiv->display(m_fenetre);
+						unsigned int r = alentours(TAILLE_GRILLE-1, &m_liste[0][0], 2, x, y).size();
+						ptr_indiv->display(m_fenetre, sf::Color(r*1.5, 0x30, 0));
 					}
 				}
 			}
@@ -260,7 +269,7 @@ void Simulation<TAILLE_GRILLE>::run()
 					iter = sous_liste->size();
 					for(int k=0; k<iter; k++)
 					{
-						sous_liste->at(k)->display(m_fenetre);
+						sous_liste->at(k)->display(m_fenetre, sf::Color(0xff, 0x20, 0));
 					}
 				}
 			}
@@ -268,7 +277,8 @@ void Simulation<TAILLE_GRILLE>::run()
 		//Murs
 		for(unsigned int i=0; i<m_murs.size(); i++)
 		{
-			getVecteursCase(m_murs.at(i).getX(), m_murs.at(i).getY())->at(0)->display(m_fenetre);
+			//getVecteursCase(m_murs.at(i).getX(), m_murs.at(i).getY())->at(0)->display(m_fenetre, sf::Color(0,0,0));
+			m_liste[int(m_murs.at(i).getX())][int(m_murs.at(i).getY())]->at(0)->display(m_fenetre, sf::Color(0,0,0));
 		}
 		// Sorties
 		for(unsigned int i=0; i<m_sorties.size(); i++)
@@ -297,7 +307,7 @@ std::vector<Individu*>* Simulation<TAILLE_GRILLE>::getVecteursCase(int x, int y)
 }
 
 template<unsigned int TAILLE_GRILLE>
-int Simulation<TAILLE_GRILLE>::champVitesses(const unsigned int l, const unsigned int c) const
+Vect Simulation<TAILLE_GRILLE>::champVitesses(const unsigned int l, const unsigned int c) const
 {
 	return m_champ_vitesses->at(l).at(c);
 }

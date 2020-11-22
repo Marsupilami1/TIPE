@@ -44,13 +44,6 @@ double Vect::norme() const
 	return sqrt(m_x*m_x + m_y*m_y);
 }
 
-Vect Vect::entier()
-{
-	Vect res = {floor(m_x), floor(m_y)};
-	return res;
-}
-
-
 bool Vect::egal(Vect const& v) const
 {
 	return (m_x == v.m_x && m_y == v.m_y);
@@ -60,6 +53,16 @@ Vect Vect::oppose() const
 {
 	Vect res(-m_x, -m_y);
 	return res;
+}
+
+Vect Vect::normalise() const
+{
+	Vect id(*this);
+	if (id == Vect(0.,0.)) {
+		return id;
+	} else {
+		return (id/(id.norme()));
+	}
 }
 
 double Vect::scalaire(Vect const& v) const
@@ -151,16 +154,6 @@ double operator%(Vect const& u, Vect const& v)
 Vect operator/(Vect const& u, double const& k)
 {
 	return u*(1/k);
-}
-
-Vect Vect::normalise() const
-{
-	Vect id(*this);
-	if (id == Vect(0.,0.)) {
-		return id;
-	} else {
-		return (id/(id.norme()));
-	}
 }
 
 std::ostream& operator<<(std::ostream &flux, Vect const& u)
