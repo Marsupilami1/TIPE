@@ -1,0 +1,79 @@
+Thème : Enjeux Sociétaux
+
+Titre : Modélisation des foules lors d'évacuations.
+
+Ancrage : 
+    Les mouvements de foule ne sont pas toujours maîtrisables. Ils peuvent blesser certaines personnes, voire les tuer.
+    Au vu de la difficulté de réaliser régulièrement des expériences à grande échelle,
+    la création d'un modèle numérique permet de réduire la gravité des incidents.
+    -> 43 mots 
+    
+Motivation du choix de l'étude :
+    La perspective d'un TIPE comprenant une importante part d'informatique m'intéresse grandement.
+    Je trouve que l'étude d'un sujet concret et moderne comme les foules est particulièrement motivante et
+    que les acquis informatiques que peuvent m'apporter ce TIPE sont complémentaires au programme.
+    -> 40 mots
+    
+Positionnement thématique : Informatique Pratique
+
+Mots-clés | Key-words :
+    Mouvements de foules | Crowd movement
+    Simulation numérique | Digital simulation
+    Modèle | Model
+    Analogie physique | Physical analogy
+    Évacuation | Evacuation
+
+Bibliographie commentée :
+      Les premières simulations de déplacement, appliquées à des groupes d'oiseaux [1], avaient seulement pour but l'étude de leurs mouvements.
+    L'étude de foules humaines quant à elle permet de mieux les comprendre et d'anticiper des mouvements collectifs.
+    L'exemple le plus frappant est celui de la simulation de piétons, massivement utilisée dans le cinéma et le jeu vidéo. La mise au point de simulations réalistes nécessite
+    l'établissement de "règles de déplacement" pouvant être calculées. Ces règles sont obtenues par l'expérience. On peut par exemple étudier l'évolution d'un trafic piétonnier
+    autour d'un cylindre. La solidité des différents modèles passe par la comparaison entre les propriétés dynamiques et phénomènes d'agrégation observés avec les mouvements de foules réels. [2][3]
+      Ces modèles considèrent des individus singuliers, tous adoptent un même comportement, suivant un champ de vision et des règles qui lui sont données. Ils sont alors
+    traités les uns après les autres. Lorsque la densité des individus devient trop importante, l'environnement devient homogène, analogue à un fluide. Un modèle macroscopique,
+    dans lequel on ne considère que les entités simulées sont des groupes d'individus voire le groupe tout entier. Ce modèle devient alors très efficace. [4]
+      Ces différentes simulations jouent un rôle dans la sécurité des individus en contexte d'évacuation. Elles permettent de faire de bonnes modifications de l'environnement,
+    de l'architecture et de prescrire le bon comportement à adopter. [5]
+    Les évacuations amènent d'autres problématiques. La présence d'une sortie, un objectif ponctuel et commun, implique l'existence d'un champ de vitesses. Il peut se calculer
+    à l'aide d'un gradient, ou en adoucissant un premier champ grossier. [6]
+
+
+Problématique retenue :
+    Il s'agit de construire et d'étudier un modèle de simulation d'évacuations de foules.
+    Les règles de la simulation, programmé en C++, seront déduites d'expériences.
+    En étudiant deux situations distinctes, nous verrons comment assurer une évacuation plus rapide et moins dangereuse.
+
+Objectifs :
+
+    Nathan Maillet : [., 2, 3]
+    Andrieux Martin : [., 4, 5]
+    
+    "Moyen" : 
+        La validité de la simulation repose sur une comparaison avec un incident déjà enregistré
+    
+    0) Comparaison du modèle avec forces et avec vitesse
+    1) Chercher à optimiser la densité
+    2) Chercher à optimiser les temps de sortie
+        - Influence des pylônes, où placer les pylônes et combien ?
+    3) Étude asymptotique des mouvements de foule en fonction du nombre d'individus
+        - Étudier l'influence du nombre de personnes sur le temps de sortie : densité, nombre et taille des sorties...
+    4) Observation de comportements locaux récurrents chez les individus
+        - Influence des couloirs et étranglements
+        - Agglutinements
+        - Contournement des pylônes
+        - Qualité du champ de vitesse, conséquences sur les comportements locaux
+    5) Étude des performances du programme
+        - Comparaison entre les complexités des programmes actuels et le nôtre
+        - Performance du calcul du champ de vitesses
+
+    //1) La difficulté de faire des expériences à taille humaine justifie l'intêrêt de la simulation et des expériences avec des billes
+    //    - Réaliser une simulation numérique et une expérience sur un milieu granulaire (billes)
+    
+
+Références bibliographiques:
+    [1] Craig W. Reynolds : Flocks, Herds, and Schools: A Distributed Behavioral Model 1, https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf (dernière consultation le 30 Octobre 2020)
+    [2] Samuel Lemercier : Thèse : Simulation du comportement de suivi dans une foule de piétons à travers l’expérience, l’analyse et la modélisation, Août 2012
+    [3] Patrick Simo Kanmeugne : Thèse : Simulation crédible des déplacements de piétons en temps réel : modèle microscopique à influence macroscopique, Avril 2015
+    [4] Ngoc-Anh T. Nguyen, Jean-Daniel Zucker, Huu-Du Nguyen, Alexis Drogoul,Duc An Vo :  A Hybrid macro-micro pedestrians evacuation model to speed up simulation in road networks, https://hal.archives-ouvertes.fr/hal-00736474/document (dernière consultation le 30 Octobre 2020)
+    [5] Joao E.Almeida, Rosaldo Rosseti, Antonio Leca Coelho : Crowd Simulation Modeling Applied to Emergency and Evacuation Simulations using Multi-Agent Systems, https://arxiv.org/ftp/arxiv/papers/1303/1303.4692.pdf (dernière consultation le 30 Octobre 2020)
+    [6] Howard J. Hamilton, University of Regina : Modélisation d'un champs de flux pour les foules, http://www2.cs.uregina.ca/~anima/408/Notes/Crowds/Crowds.htm (dernière consultation le 30 Octobre 2020)
