@@ -31,6 +31,7 @@ class Individu
 	private :
 		Vect m_position;
 		Vect m_vitesse;
+		Vect m_acceleration;
 		double m_rayon;
 		double m_rayon_repulsion;
 		double m_rayon_suivi;

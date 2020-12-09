@@ -49,7 +49,7 @@ Simulation<TAILLE_GRILLE>::Simulation() :								\
 
 	m_distances_sorties = new std::vector<Vect>;
 
-	m_fenetre.setFramerateLimit(45);
+	//m_fenetre.setFramerateLimit(30);
 	m_fenetre.clear(sf::Color::White);
 	m_fenetre.display();
 	for (unsigned int i=0; i<TAILLE_GRILLE; i++) {
