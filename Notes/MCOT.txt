@@ -45,12 +45,18 @@ Problématique retenue :
 
 Objectifs :
 
-    Nathan Maillet : [., 2, 3]
-    Andrieux Martin : [., 4, 5]
+    -Andrieux Martin : construction d'un programme pour répondre à la question
+    1) Etude d'un modèle microscopique basé vitesse  
+    2) Mise en oeuvre du programme
+    3) Comparaison avec un modèle basé force
     
-    "Moyen" : 
-        La validité de la simulation repose sur une comparaison avec un incident déjà enregistré
-    
+    -Nathan Maillet : Exploitation et performances du programme
+    4) Optimisation algorithmique
+    5) Résolution d'un problème de mouvements de foules à l'aide de la simulation
+    6) Analyse des résultats obtenus avec la simulation
+
+
+    //Anciens objectifs
     0) Comparaison du modèle avec forces et avec vitesse
     1) Chercher à optimiser la densité
     2) Chercher à optimiser les temps de sortie
