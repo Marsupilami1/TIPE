@@ -256,7 +256,19 @@ void Simulation<TAILLE_GRILLE>::run()
 						delete ptr_indiv;
 					} else {
 						unsigned int r = alentours(TAILLE_GRILLE-1, &m_liste[0][0], 2, x, y).size();
-						ptr_indiv->display(m_fenetre, sf::Color(r*1.5, 0x30, 0));
+						if(r<=2.5)
+                        			{
+                            				ptr_indiv->display(m_fenetre, sf::Color(0, r*100, 0));
+                        			}
+						else {
+						    if(r<=4.5)
+						    {
+							ptr_indiv->display(m_fenetre, sf::Color(0, 0, r*50));
+						    }
+						    else {
+							ptr_indiv->display(m_fenetre, sf::Color(r*30, 0x30, 0));
+						    }
+						}
 					}
 				}
 			}
